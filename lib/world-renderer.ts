@@ -554,6 +554,25 @@ function cachedLayer(
   return layer;
 }
 
+// Pixel-art Moon for the prologue flight cinematic.
+function drawMoon(
+  c: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  r: number,
+  alpha: number,
+) {
+  c.globalAlpha = alpha;
+  for (let row = -r; row <= r; row += 2) {
+    const half = Math.floor(Math.sqrt(Math.max(0, r * r - row * row)));
+    box(c, "#e8e4d8", cx - half, cy + row, half * 2 + 2, 2);
+  }
+  box(c, "#c9c4b4", cx - r * 0.35, cy - r * 0.25, r * 0.32, r * 0.28);
+  box(c, "#c9c4b4", cx + r * 0.12, cy + r * 0.2, r * 0.28, r * 0.22);
+  box(c, "#c9c4b4", cx - r * 0.08, cy + r * 0.02, r * 0.16, r * 0.16);
+  c.globalAlpha = 1;
+}
+
 export function renderWorld(c: CanvasRenderingContext2D, f: WorldFrame) {
   const { state, transform, time, path, hover } = f;
   const city = state.cityId;
@@ -562,6 +581,73 @@ export function renderWorld(c: CanvasRenderingContext2D, f: WorldFrame) {
   const p = project;
   c.imageSmoothingEnabled = false;
   c.clearRect(0, 0, WORLD.width, WORLD.height);
+  // Lunar flight cinematic: during the prologue transformation the hero's
+  // tile detaches from the island and travels to the Moon. Purely visual;
+  // game state and positions are untouched.
+  const flight = (() => {
+    if (transform <= 0 || transform >= 1 || f.reduced) return null;
+    const t = transform;
+    const hx = Math.round(f.position.x),
+      hy = Math.round(f.position.y);
+    const hm = tileIsMars(hx, hy, transform);
+    const hz = hm ? 0 : terraceHeight(hx, hy, f.state.cityId);
+    const start = p({ x: f.position.x, y: f.position.y });
+    start.y -= hz;
+    const moon = { x: 92, y: 84 };
+    const moonR = 10 + t * 14;
+    const dockY = moon.y + moonR * 0.5;
+    let fx: number, fy: number, scale: number, spriteAlpha: number;
+    if (t < 0.25) {
+      // Detach: the tile lifts straight off the island.
+      const k = t / 0.25;
+      fx = start.x;
+      fy = start.y - k * 64;
+      scale = 1 - k * 0.15;
+      spriteAlpha = 1;
+    } else if (t < 0.85) {
+      // Cruise: arc across the sky towards the Moon.
+      const k = (t - 0.25) / 0.6;
+      const mx = (start.x + moon.x) / 2;
+      const my = Math.min(start.y, moon.y) - 130;
+      const u = 1 - k;
+      fx = u * u * start.x + 2 * u * k * mx + k * k * moon.x;
+      fy = u * u * start.y + 2 * u * k * my + k * k * dockY;
+      scale = 0.85 - k * 0.45;
+      spriteAlpha = 1;
+    } else {
+      // Dock: settle onto the lunar surface and hand back to the island.
+      const k = (t - 0.85) / 0.15;
+      fx = moon.x;
+      fy = dockY - k * 4;
+      scale = 0.4;
+      spriteAlpha = 1 - k;
+    }
+    const heroAlpha =
+      t < 0.15 ? 1 - t / 0.15 : t < 0.9 ? 0 : (t - 0.9) / 0.1;
+    const shade = n(hx, hy);
+    const tileColor = hm
+      ? shade > 0.3
+        ? "#f19569"
+        : "#dc7959"
+      : f.state.cityId === "uyuni"
+        ? "#d8f1f6"
+        : f.state.cityId === "la-paz"
+          ? "#8c7e64"
+          : "#69c980";
+    return {
+      t,
+      start,
+      moon,
+      moonR,
+      fx,
+      fy,
+      scale,
+      spriteAlpha,
+      heroAlpha,
+      tileColor,
+      hm,
+    };
+  })();
   c.drawImage(
     cachedLayer("stars", (c) => {
       for (let i = 0; i < 65; i++) {
@@ -580,6 +666,15 @@ export function renderWorld(c: CanvasRenderingContext2D, f: WorldFrame) {
     0,
     0,
   );
+  // The Moon fades in and grows as the tile approaches it.
+  if (flight)
+    drawMoon(
+      c,
+      flight.moon.x,
+      flight.moon.y,
+      flight.moonR,
+      Math.min(1, flight.t * 2),
+    );
   for (let i = 0; i < 5; i++) {
     const cx = ((i * 211 + (f.reduced ? 0 : time * 0.003)) % 940) - 70,
       cy = 78 + (i % 3) * 141;
@@ -903,12 +998,15 @@ export function renderWorld(c: CanvasRenderingContext2D, f: WorldFrame) {
     depth: f.position.x + f.position.y + 0.15,
     draw: () => {
       const foot = project(f.position);
+      // While the tile flies, the island hero hands over to the flying one.
+      if (flight) c.globalAlpha = Math.max(0, flight.heroAlpha);
       c.save();
       c.translate(foot.x, foot.y);
       c.scale(1.15, 1.15);
       c.translate(-foot.x, -foot.y);
       avatar(c, f);
       c.restore();
+      if (flight) c.globalAlpha = 1;
     },
   });
   items.sort((a, b) => a.depth - b.depth);
@@ -936,6 +1034,63 @@ export function renderWorld(c: CanvasRenderingContext2D, f: WorldFrame) {
         py = wave - 130 + ((i * 41) % 120);
       box(c, "#ecaa7044", px, py, 7 + (i % 5), 2);
     }
+  }
+  if (flight && flight.spriteAlpha > 0) {
+    c.globalAlpha = flight.spriteAlpha;
+    const s2 = flight.scale;
+    // Exhaust trail pointing back to the departure tile.
+    const dx = flight.start.x - flight.fx,
+      dy = flight.start.y - flight.fy;
+    const d = Math.hypot(dx, dy) || 1;
+    for (let i = 1; i <= 3; i++) {
+      const tr = i * 14 * s2;
+      box(
+        c,
+        i === 1 ? "#f2b57688" : "#ecaa7044",
+        flight.fx - (dx / d) * tr - 2,
+        flight.fy - (dy / d) * tr + 14 * s2,
+        4,
+        2,
+      );
+    }
+    // The hero's tile, floating with the hero riding it.
+    diamond(
+      c,
+      flight.tileColor,
+      { x: flight.fx, y: flight.fy },
+      32 * s2,
+      16 * s2,
+    );
+    line(
+      c,
+      "#3d593966",
+      [flight.fx - 32 * s2, flight.fy],
+      [flight.fx, flight.fy + 16 * s2],
+    );
+    line(
+      c,
+      "#3d593966",
+      [flight.fx, flight.fy + 16 * s2],
+      [flight.fx + 32 * s2, flight.fy],
+    );
+    const bob = Math.floor(time / 130) % 2;
+    const bx = flight.fx,
+      by = flight.fy - 2;
+    box(c, "#8a7560", bx - 4 * s2, by - 12 * s2 - bob, 4 * s2, 8 * s2);
+    box(
+      c,
+      flight.hm ? "#e9dfc7" : "#e6b25d",
+      bx - 2 * s2,
+      by - 13 * s2 - bob,
+      8 * s2,
+      9 * s2,
+    );
+    box(c, "#b98e6e", bx - 2 * s2, by - 18 * s2 - bob, 7 * s2, 6 * s2);
+    box(c, "#483c36", bx - 3 * s2, by - 19 * s2 - bob, 9 * s2, 3 * s2);
+    // Engine flicker under the tile.
+    if (Math.floor(time / 90) % 2 === 0)
+      box(c, "#ffd27f99", bx - 2, flight.fy + 14 * s2, 4, 3);
+    c.globalAlpha = 1;
   }
   if (state.rescue.status === "complete") {
     const p0 = project({ x: 4, y: 4 });
