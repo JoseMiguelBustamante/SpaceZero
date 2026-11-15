@@ -1,0 +1,5234 @@
+/* An explorable canvas world. Legacy challenge styles are scoped into tactical consoles. */
+.iso-game {
+  height: 100dvh;
+  min-height: 650px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #101019;
+  color: #e4dcca;
+  position: relative;
+  font-family: var(--terminal);
+}
+.iso-topbar {
+  height: 67px;
+  min-height: 67px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 31px;
+  border-bottom: 1px solid #34303b;
+  background: #14121df2;
+  z-index: 12;
+  gap: 20px;
+}
+.iso-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.iso-brand > span {
+  color: #ec6a4a;
+  display: grid;
+  place-items: center;
+  width: 39px;
+  height: 39px;
+  border: 1px solid #714333;
+  box-shadow: 3px 3px #2d2429;
+}
+.iso-brand > div {
+  font: 8px/1.8 var(--pixel);
+  letter-spacing: 0.3px;
+}
+.iso-brand small {
+  display: block;
+  font: 11px var(--terminal);
+  letter-spacing: 2px;
+  color: #a79aa7;
+  margin-top: 3px;
+}
+.iso-brand small b {
+  color: #df8a66;
+  font-weight: 400;
+}
+.iso-header-status {
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: #938c91;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.header-slash {
+  margin: 0 4px;
+  color: #4e404e;
+}
+.iso-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+.iso-sol {
+  font: 8px var(--pixel);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #9e90a2;
+}
+.iso-sol strong {
+  font: 23px var(--pixel);
+  font-weight: 400;
+  color: #ec8b66;
+}
+.iso-sol small {
+  font: 14px var(--terminal);
+  color: #71657f;
+}
+.iso-icon-button {
+  min-width: 28px;
+  height: 29px;
+  position: relative;
+  background: #1b1823;
+  border: 1px solid #453646;
+  color: #a79aab;
+  font-size: 19px;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+}
+.iso-icon-button > span {
+  font-size: 8px;
+  letter-spacing: 0.5px;
+}
+.iso-icon-button.enabled {
+  color: #c0ce9d;
+  border-color: #697b59;
+}
+.iso-icon-button:hover {
+  border-color: #c88b66;
+  color: #efc09b;
+}
+.world-hud {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  padding: 11px 31px 12px;
+  background: #14121dce;
+  z-index: 11;
+  border-bottom: 1px solid #3a303b;
+  flex-shrink: 0;
+  gap: 0;
+}
+.world-resource {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 19px;
+  border-left: 1px solid #38303c;
+  min-width: 0;
+}
+.world-resource:first-child {
+  border: 0;
+  padding-left: 0;
+}
+.resource-glyph {
+  font-size: 19px;
+  color: var(--resource);
+  min-width: 23px;
+  text-align: center;
+  opacity: 0.9;
+}
+.world-resource > div {
+  flex: 1;
+  min-width: 0;
+}
+.world-resource-label {
+  font: 6px/1.4 var(--pixel);
+  color: #a597a5;
+  letter-spacing: 0.3px;
+  display: block;
+}
+.world-resource strong {
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 1.2;
+  display: block;
+  margin-top: 4px;
+  color: #e5dbca;
+}
+.world-resource small {
+  font-size: 13px;
+  color: #817487;
+  margin-left: 3px;
+}
+.world-resource-bar {
+  height: 4px;
+  margin-top: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    #302736 0,
+    #302736 5px,
+    #15121d 5px,
+    #15121d 7px
+  );
+  position: relative;
+  overflow: hidden;
+}
+.world-resource-bar > i {
+  display: block;
+  height: 4px;
+  background: var(--resource);
+  mask-image: repeating-linear-gradient(
+    90deg,
+    #000 0,
+    #000 5px,
+    transparent 5px,
+    transparent 7px
+  );
+  transition: width 0.1s linear;
+  opacity: 0.85;
+}
+.world-resource.eva-preview .world-resource-label {
+  color: #e5aa6b;
+}
+.world-resource.eva-preview strong {
+  color: #ffb000;
+}
+.iso-world {
+  padding: 0;
+  position: relative;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      ellipse at 50% 65%,
+      #38222670 0,
+      #221c2766 30%,
+      #13111c00 64%
+    ),
+    linear-gradient(#11111a, #17131c);
+  isolation: isolate;
+}
+.iso-world:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 48px;
+  background: linear-gradient(transparent, #14111bdd);
+  pointer-events: none;
+  z-index: 2;
+}
+.world-canvas-container {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.world-surface {
+  position: relative;
+  flex-shrink: 0;
+  transform-origin: center center;
+  will-change: transform;
+}
+.world-surface > canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: crosshair;
+  outline: none;
+}
+.world-surface > canvas:focus-visible {
+  outline: 1px dashed #5ce1e64d;
+  outline-offset: -4px;
+}
+.building-label {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #181720e6;
+  border: 1px solid #696155;
+  color: #c8bba6;
+  font: 6px/1.6 var(--pixel);
+  padding: 7px 9px;
+  white-space: nowrap;
+  box-shadow: 2px 2px #0b0b12aa;
+  min-height: 28px;
+  z-index: 3;
+  pointer-events: auto;
+}
+.building-label:after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: calc(50% - 1px);
+  height: 9px;
+  width: 1px;
+  background: #a8906b66;
+}
+.building-label:hover,
+.building-label.nearby {
+  border-color: #c6b185;
+  color: #fff0cf;
+  background: #342829;
+}
+.building-index {
+  font: 10px var(--terminal);
+  color: #8b7b7d;
+  padding-right: 5px;
+  border-right: 1px solid #5c4a49;
+}
+.building-label.mission-active {
+  border-color: #c89455;
+  color: #f1d9b0;
+}
+.mission-mark {
+  background: #ec8e4d;
+  color: #25191c;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 24px;
+  font: 13px var(--pixel);
+  position: absolute;
+  right: -11px;
+  top: -18px;
+  box-shadow: 2px 2px #633b29;
+  animation: mission-bob 2s steps(2) infinite;
+}
+.future-building {
+  border-color: #4f4851;
+  color: #827782;
+}
+.building-label:disabled {
+  pointer-events: none;
+  opacity: 0.7;
+}
+.player-marker {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  font: 9px var(--terminal);
+  letter-spacing: 0.8px;
+  color: #fae8bb;
+  text-shadow: 1px 1px #000;
+  pointer-events: none;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 3px;
+}
+.player-marker i {
+  width: 3px;
+  height: 3px;
+  background: #e5c598;
+}
+.world-heading {
+  position: absolute;
+  top: 23px;
+  left: 31px;
+  pointer-events: none;
+  z-index: 4;
+  max-width: 560px;
+}
+.world-heading .eyebrow {
+  font-size: 6px;
+  letter-spacing: 0.7px;
+  color: #b58e7d;
+}
+.world-heading h1 {
+  font: clamp(12px, 1.3vw, 18px)/1.75 var(--pixel);
+  color: #e7ddca;
+  margin: 11px 0 6px;
+  letter-spacing: -0.6px;
+  text-shadow: 2px 2px #18131e;
+}
+.world-heading p {
+  font-size: 15px;
+  color: #978593;
+  margin: 0;
+  letter-spacing: 0.2px;
+}
+.world-coordinate-card {
+  position: absolute;
+  right: 31px;
+  top: 23px;
+  width: 195px;
+  padding: 13px 14px;
+  border: 1px solid #49404b;
+  background: #191622ba;
+  z-index: 3;
+}
+.world-coordinate-card > span:first-child {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.8px;
+  color: #8d7e91;
+}
+.world-coordinate-card > strong {
+  font: 7px/1.7 var(--pixel);
+  display: block;
+  color: #c3ac94;
+  margin: 9px 0;
+}
+.world-coordinate-card > div {
+  display: flex;
+  justify-content: space-between;
+  color: #9c9198;
+  font-size: 12px;
+}
+.coordinate-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 8px;
+  letter-spacing: 0.7px;
+  margin-top: 10px;
+  color: #829275;
+}
+.coordinate-link i {
+  width: 3px;
+  height: 3px;
+  background: #9cbd7b;
+}
+.origin-overlay {
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: #65505c #19131f;
+  position: absolute;
+  left: 32px;
+  top: 28px;
+  bottom: 28px;
+  max-height: 530px;
+  margin: auto 0;
+  width: 340px;
+  z-index: 7;
+  background: #15131ff2;
+  border: 1px solid #645047;
+  box-shadow: 5px 5px #0c0b13cc;
+  display: flex;
+  flex-direction: column;
+}
+.origin-overlay-header {
+  padding: 24px 23px 20px;
+}
+.origin-overlay-header .eyebrow {
+  font-size: 6px;
+  letter-spacing: 0.2px;
+  color: #b48a75;
+}
+.origin-overlay-header h2 {
+  font: 22px/1.7 var(--pixel);
+  letter-spacing: -1px;
+  margin: 17px 0 10px;
+  color: #e4d9c7;
+}
+.origin-overlay-header h2 em {
+  color: #ec8b66;
+  font-style: normal;
+}
+.origin-overlay-header p {
+  font-size: 18px;
+  color: #a597a7;
+  margin: 0;
+}
+.origin-choices {
+  padding: 0 15px;
+  display: grid;
+  gap: 9px;
+}
+.origin-choice {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  border: 1px solid #4c3e4a;
+  background: #211c29;
+  text-align: left;
+  padding: 15px 12px;
+  width: 100%;
+  position: relative;
+}
+.origin-choice:hover {
+  background: #33262b;
+  border-color: #db9467;
+  box-shadow: inset 3px 0 #ec8b66;
+}
+.origin-choice > span:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+}
+.origin-choice small {
+  font-size: 9px;
+  color: #8c7f93;
+  letter-spacing: 0.8px;
+}
+.origin-choice strong {
+  font: 9px/1.8 var(--pixel);
+  font-weight: 400;
+  color: #e4d4be;
+  letter-spacing: -0.3px;
+}
+.origin-bonus {
+  color: #b3c68e;
+  font-size: 14px;
+}
+.origin-penalty {
+  color: #c49075;
+  font-size: 12px;
+  margin-top: -2px;
+}
+.origin-symbol {
+  font-size: 35px;
+  min-width: 30px;
+  color: #86a06a;
+}
+.origin-uyuni .origin-symbol {
+  color: #d4d6b9;
+}
+.origin-la-paz .origin-symbol {
+  color: #bd8766;
+}
+.origin-choice > b {
+  font: 18px var(--terminal);
+  font-weight: 400;
+  color: #b28b6f;
+}
+.origin-overlay-footer {
+  margin-top: auto;
+  padding: 15px 19px;
+  font-size: 9px;
+  letter-spacing: 0.7px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #8f7f91;
+}
+.origin-overlay-footer .live-dot {
+  width: 4px;
+  height: 4px;
+}
+.world-objective {
+  position: absolute;
+  bottom: 25px;
+  left: 31px;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #211a24e8;
+  border: 1px solid #75503b;
+  padding: 12px 14px;
+  color: #bb957d;
+  box-shadow: 3px 3px #0c0a12;
+  max-width: calc(100% - 300px);
+  text-align: left;
+}
+.objective-marker {
+  width: 27px;
+  height: 31px;
+  display: grid;
+  place-items: center;
+  background: #463027;
+  color: #f2b46e;
+  border: 1px solid #be8852;
+  font: 13px var(--pixel);
+  flex-shrink: 0;
+}
+.world-objective > span:nth-child(2) {
+  font-size: 9px;
+  letter-spacing: 0.8px;
+  color: #9c8b91;
+}
+.world-objective strong {
+  font: 8px/1.7 var(--pixel);
+  font-weight: 400;
+  display: block;
+  color: #e9cda3;
+  margin-top: 5px;
+}
+.world-objective > b {
+  font-size: 10px;
+  font-weight: 400;
+  margin-left: 15px;
+  letter-spacing: 0.4px;
+}
+.world-objective:hover {
+  border-color: #ec8b66;
+  background: #33252b;
+}
+.world-tools {
+  position: absolute;
+  right: 31px;
+  bottom: 27px;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.world-tools > span {
+  font-size: 9px;
+  line-height: 1.2;
+  color: #817082;
+  letter-spacing: 0.5px;
+  margin-right: 5px;
+}
+.world-tools button {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #51414e;
+  background: #191620;
+  color: #bba691;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+}
+.world-tools button:hover {
+  border-color: #ddaa79;
+  background: #2f232b;
+}
+.world-scale {
+  position: absolute;
+  bottom: 11px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 8px;
+  color: #6e6172;
+  letter-spacing: 0.7px;
+  white-space: nowrap;
+  z-index: 3;
+}
+.world-scale > i {
+  display: block;
+  width: 24px;
+  height: 5px;
+  border: 1px solid #7c6655;
+  border-top: 0;
+}
+.world-scale > b {
+  font-size: 9px;
+  color: #99836e;
+  font-weight: 400;
+}
+.world-climate {
+  position: absolute;
+  right: 31px;
+  top: 147px;
+  text-align: right;
+  color: #928293;
+  z-index: 3;
+  pointer-events: none;
+  max-width: 230px;
+}
+.world-climate > span {
+  font-size: 10px;
+  letter-spacing: 0.6px;
+  color: #aa8c7c;
+  display: block;
+}
+.world-climate strong {
+  display: block;
+  font-size: 18px;
+  font-weight: 400;
+  color: #c3baa6;
+  margin-top: 4px;
+}
+.world-climate strong b {
+  font-weight: 400;
+  color: #6a5d72;
+  margin: 0 4px;
+}
+.world-climate small {
+  display: block;
+  font-size: 8px;
+  letter-spacing: 0.4px;
+  margin-top: 6px;
+  color: #77677d;
+}
+.world-climate a {
+  pointer-events: auto;
+  display: inline-block;
+  margin-left: 5px;
+  font-size: 13px;
+}
+.world-dialogue {
+  margin: 0 31px;
+  border: 1px solid #55434e;
+  background: #19151ff5;
+  z-index: 12;
+  min-height: 116px;
+  max-height: 156px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 18px 20px;
+  gap: 19px;
+  box-shadow: 4px 4px #080811;
+}
+.dialogue-portrait {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.dialogue-portrait > svg {
+  border: 1px solid #89634b;
+  box-shadow: 3px 3px #33232b;
+}
+.dialogue-portrait > span {
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: #9f7d6b;
+}
+.dialogue-copy {
+  min-width: 0;
+  flex: 1;
+}
+.dialogue-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  letter-spacing: 0.7px;
+  color: #b18a76;
+}
+.dialogue-meta > span {
+  line-height: 1.5;
+}
+.dialogue-meta b {
+  font-weight: 400;
+  color: #635166;
+  margin: 0 7px;
+}
+.dialogue-meta > button {
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  background: transparent;
+  border: 0;
+  color: #8c778f;
+  padding: 0;
+  flex-shrink: 0;
+}
+.dialogue-meta > button > span {
+  color: #ac9299;
+  border: 1px solid #4b374b;
+  padding: 1px 3px;
+  margin-left: 4px;
+}
+.dialogue-meta > button:hover {
+  color: #dda877;
+}
+.dialogue-copy p {
+  font-size: 18px;
+  line-height: 1.25;
+  color: #d0c0c5;
+  letter-spacing: 0.1px;
+  margin: 10px 0 0;
+  min-height: 45px;
+  cursor: pointer;
+}
+.dialogue-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  align-self: center;
+  flex-shrink: 0;
+  min-width: 180px;
+  min-height: 46px;
+  border: 1px solid #e2a57b;
+  background: #d98358;
+  box-shadow: 3px 3px #6d3e31;
+  padding: 0 14px;
+  color: #251a1c;
+  font: 8px/1.7 var(--pixel);
+}
+.dialogue-action > span {
+  font: 20px var(--terminal);
+}
+.dialogue-action:hover:not(:disabled) {
+  background: #f0a371;
+}
+.dialogue-action:disabled {
+  background: #33252a;
+  border-color: #704a3c;
+  color: #90614e;
+  box-shadow: 3px 3px #1e1520;
+}
+.iso-controls {
+  height: 32px;
+  min-height: 32px;
+  padding: 0 31px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #7e6a83;
+  font-size: 9px;
+  letter-spacing: 0.4px;
+  gap: 10px;
+  background: #11101a;
+}
+.iso-controls > span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.iso-controls kbd {
+  font: 9px var(--terminal);
+  background: #201a29;
+  border: 1px solid #3d3043;
+  color: #b3a0ad;
+  padding: 1px 3px;
+}
+.iso-controls i {
+  height: 3px;
+  width: 3px;
+  background: #69526a;
+  margin: 0 4px;
+}
+.bolivia-flag {
+  width: 14px;
+  height: 9px;
+  display: flex;
+  flex-direction: column;
+  margin-left: 4px;
+}
+.bolivia-flag > i {
+  height: 3px;
+  width: 14px;
+  background: #ae5445;
+  margin: 0;
+}
+.bolivia-flag > i:nth-child(2) {
+  background: #bba54f;
+}
+.bolivia-flag > i:nth-child(3) {
+  background: #6b8b50;
+}
+.world-toast {
+  position: absolute;
+  left: 50%;
+  top: 20px;
+  transform: translateX(-50%);
+  max-width: min(570px, 75%);
+  z-index: 8;
+  background: #1e1a26ed;
+  border: 1px solid #7c6250;
+  color: #d1b69b;
+  padding: 11px 14px;
+  font-size: 15px;
+  line-height: 1.3;
+  display: flex;
+  gap: 9px;
+  box-shadow: 3px 3px #0b0b12;
+}
+.world-toast > span {
+  color: #ec8b66;
+}
+.collapse-warning {
+  position: absolute;
+  left: 50%;
+  top: 28px;
+  transform: translateX(-50%);
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #4d2028ed;
+  border: 1px solid #ff8e68;
+  padding: 14px 18px;
+  color: #ffc698;
+  box-shadow: 4px 4px #28131e;
+  min-width: 420px;
+}
+.collapse-warning > span {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 35px;
+  background: #b24a35;
+  font: 21px var(--pixel);
+  color: #ffddac;
+}
+.collapse-warning > div {
+  font: 11px/1.7 var(--pixel);
+}
+.collapse-warning small {
+  display: block;
+  font: 10px var(--terminal);
+  color: #d99a7f;
+  margin-top: 6px;
+  letter-spacing: 0.7px;
+}
+.collapse-warning > b {
+  font: 23px var(--terminal);
+  margin-left: auto;
+  font-weight: 400;
+}
+.iso-collapse .iso-world:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  background: #c8392518;
+  pointer-events: none;
+  animation: planet-flash 1.4s steps(1) 2;
+}
+.iso-collapse .world-surface {
+  animation: planet-shake 0.18s steps(2) 5;
+}
+.iso-collapse .world-heading {
+  opacity: 0.3;
+}
+.iso-collapse .world-dialogue {
+  border-color: #b46b4e;
+}
+.eva-route-card {
+  position: absolute;
+  bottom: 24px;
+  left: 31px;
+  z-index: 5;
+  background: #2b2026ed;
+  border: 1px solid #ac8455;
+  padding: 13px 16px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  max-width: 450px;
+}
+.eva-route-card .live-dot {
+  background: #ffb000;
+  margin-top: 4px;
+}
+.eva-route-card > div {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: #c29b75;
+}
+.eva-route-card strong {
+  display: block;
+  font-weight: 400;
+  font-size: 21px;
+  color: #e7bb7c;
+  margin-top: 6px;
+}
+.eva-route-card small {
+  display: block;
+  font-size: 9px;
+  color: #957d91;
+  margin-top: 6px;
+  letter-spacing: 0.3px;
+}
+.iso-storm .iso-world {
+  background: radial-gradient(ellipse at 45% 70%, #73433145, #18131b 70%);
+}
+.iso-storm .world-hud {
+  border-color: #78523a;
+}
+.iso-storm .iso-header-status {
+  color: #c39865;
+}
+.iso-storm .iso-header-status .live-dot {
+  background: #ffb000;
+}
+.iso-storm .world-coordinate-card {
+  animation: power-flicker 8s steps(1) infinite;
+}
+.world-complete-banner {
+  position: absolute;
+  top: 23px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #bedba2;
+  font: 7px/1.7 var(--pixel);
+  border: 1px solid #6d8a56;
+  padding: 12px 16px;
+  background: #1d2d23e8;
+  max-width: 540px;
+  z-index: 5;
+  text-align: center;
+  animation: dsn-blink 1.5s steps(1) 4;
+}
+.world-tactical {
+  position: fixed;
+  inset: 138px 22px 160px auto;
+  margin: 0;
+  width: 550px;
+  max-width: calc(100vw - 40px);
+  max-height: calc(100dvh - 298px);
+  padding: 0;
+  border: 1px solid #92765d;
+  box-shadow: 6px 6px #0b0a12;
+  overflow: hidden;
+  background: #14121df7;
+  color: #d9cbbd;
+}
+.world-tactical[open] {
+  display: flex;
+  flex-direction: column;
+}
+.world-tactical::backdrop {
+  background: #0808104d;
+  backdrop-filter: none;
+}
+.tactical-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding: 16px 18px;
+  border-bottom: 1px solid #5b4350;
+  flex-shrink: 0;
+  background: #211a25;
+}
+.tactical-header > div > span {
+  font-size: 10px;
+  letter-spacing: 0.9px;
+  color: #ba9278;
+}
+.tactical-header h2 {
+  font: 10px/1.7 var(--pixel);
+  margin: 6px 0 0;
+  color: #e0c9ad;
+}
+.tactical-close {
+  width: 29px;
+  height: 37px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font: 23px var(--terminal);
+  line-height: 0.8;
+  background: transparent;
+  border: 0;
+  color: #c39c84;
+  gap: 5px;
+}
+.tactical-close small {
+  font-size: 8px;
+  letter-spacing: 0.8px;
+  color: #8d718c;
+}
+.tactical-close:hover {
+  color: #ffe7ba;
+}
+.tactical-body {
+  padding: 19px;
+  overflow: auto;
+  flex: 1;
+  min-height: 0;
+  overscroll-behavior: contain;
+  scrollbar-color: #65505c #19131f;
+}
+.tactical-footer {
+  flex-shrink: 0;
+  border-top: 1px solid #493646;
+  padding: 9px 17px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 8px;
+  letter-spacing: 0.7px;
+  color: #8f8191;
+}
+.tactical-footer .live-dot {
+  width: 4px;
+  height: 4px;
+}
+.world-tactical .chapter-title {
+  display: none;
+}
+.world-tactical .panel {
+  box-shadow: none;
+}
+.world-tactical .chapter-grid {
+  display: block;
+}
+.world-tactical .greenhouse-view {
+  display: none;
+}
+.world-tactical .calibration-panel {
+  border: 0;
+  background: transparent;
+}
+.world-tactical .calibration-panel > .panel-bar {
+  display: none;
+}
+.world-tactical .calibration-content {
+  padding: 0;
+}
+.world-tactical .chapter-intro {
+  font-size: 20px;
+  margin-bottom: 18px;
+}
+.world-tactical .chapter-intro > span {
+  font-size: 17px;
+}
+.world-tactical .retro-slider > span:first-child {
+  font-size: 7px;
+}
+.world-tactical .retro-slider strong {
+  font-size: 26px;
+}
+.world-tactical .launch-button {
+  font-size: 8px;
+  min-height: 47px;
+  box-shadow: 3px 3px #704031;
+}
+.world-tactical .science-note {
+  margin-top: 20px;
+}
+.world-tactical .science-note summary {
+  font-size: 14px;
+  padding: 11px 12px;
+}
+.world-tactical .science-note > div {
+  font-size: 16px;
+  padding: 13px;
+}
+.world-tactical .reaction-status {
+  font-size: 16px;
+  min-height: 0;
+  line-height: 1.3;
+}
+.world-tactical.tactical-storm {
+  width: 730px;
+}
+.world-tactical .storm-overview {
+  display: block;
+}
+.world-tactical .storm-view {
+  display: none;
+}
+.world-tactical .budget-body {
+  padding: 17px;
+}
+.world-tactical .budget-number > strong {
+  font-size: 32px;
+}
+.world-tactical .budget-number > span {
+  font-size: 22px;
+}
+.world-tactical .cycle-dots {
+  margin-top: 16px;
+}
+.world-tactical .allocation-track {
+  margin-top: 17px;
+}
+.world-tactical .budget-body > p {
+  font-size: 11px;
+  margin-top: 12px;
+}
+.world-tactical .systems-grid {
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 14px 0;
+}
+.world-tactical .system-card {
+  padding: 13px 11px;
+}
+.world-tactical .system-heading strong {
+  font-size: 8px;
+}
+.world-tactical .system-heading > span:nth-child(2) {
+  font-size: 9px;
+}
+.world-tactical .system-card > p {
+  font-size: 14px;
+  min-height: 49px;
+  margin: 12px 0;
+}
+.world-tactical .power-switch > button > span {
+  font-size: 9px;
+}
+.world-tactical .system-live {
+  font-size: 9px;
+}
+.world-tactical .storm-action-grid {
+  display: block;
+}
+.world-tactical .cycle-forecast {
+  margin-bottom: 17px;
+}
+.world-tactical .chapter-readout strong {
+  font-size: 25px;
+}
+.world-tactical .cycle-history {
+  font-size: 12px;
+}
+.world-tactical .storm-action .launch-button {
+  font-size: 9px;
+}
+.world-tactical .rescue-grid {
+  display: block;
+}
+.world-tactical .scope-screen {
+  min-height: 180px;
+}
+.world-tactical .scope-cross {
+  display: none;
+}
+.world-tactical .scope-legend {
+  font-size: 9px;
+  gap: 15px;
+  padding: 10px;
+}
+.world-tactical .scope-panel > .panel-bar {
+  font-size: 6px;
+  min-height: 34px;
+  padding: 0 10px;
+}
+.world-tactical .signal-readouts {
+  padding: 14px 0;
+}
+.world-tactical .signal-readouts > div {
+  padding: 0 10px;
+}
+.world-tactical .signal-readouts > div > span {
+  font-size: 8px;
+}
+.world-tactical .signal-readouts strong {
+  font-size: 22px;
+}
+.world-tactical .link-progress {
+  padding: 0 10px 10px;
+}
+.world-tactical .link-progress p {
+  min-height: 0;
+  font-size: 13px;
+}
+.world-tactical .probe-plaque {
+  display: none;
+}
+.world-tactical .rescue-controls {
+  margin-top: 14px;
+  border: 0;
+  background: transparent;
+}
+.world-tactical .rescue-controls > .panel-bar {
+  padding: 0 0 12px;
+  min-height: 31px;
+  border: 0;
+  font-size: 7px;
+}
+.world-tactical .rescue-controls .chapter-intro {
+  display: none;
+}
+.world-tactical .dial-scale,
+.world-tactical .dial-visual {
+  display: none;
+}
+.world-tactical .signal-dials {
+  gap: 20px;
+}
+.world-tactical .small-dial {
+  height: 37px;
+  width: 37px;
+  margin-top: 10px;
+}
+.world-tactical .small-dial > i {
+  left: 13px;
+  top: 3px;
+  height: 10px;
+  transform-origin: 1px 13px;
+}
+.world-tactical .signal-dial > span:first-child {
+  font-size: 7px;
+}
+.world-tactical .accuracy-label {
+  padding-top: 9px;
+}
+.world-tactical .rescue-controls .chapter-tip {
+  font-size: 11px;
+  line-height: 1.2;
+  margin-top: 10px;
+}
+.world-tactical .signal-start {
+  margin-top: 15px;
+}
+.world-tactical .antenna-dial {
+  padding-top: 0;
+}
+.world-tactical .antenna-dial .retro-slider {
+  margin-bottom: 15px;
+}
+.world-tactical .signal-dial {
+  margin-bottom: 12px;
+}
+.world-tactical .dsn-banner {
+  font-size: 6px;
+  padding: 10px;
+  margin-bottom: 12px;
+}
+.world-tactical .shield-urgent {
+  display: none;
+}
+.world-tactical .solar-event-body {
+  grid-template-columns: 1fr 1.8fr;
+  padding: 14px;
+}
+.world-tactical .solar-class strong {
+  font-size: 25px;
+}
+.world-tactical .shield-budget {
+  grid-column: 1/-1;
+  padding: 9px 0 0;
+  border-left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px dashed #5b4448;
+}
+.world-tactical .shield-budget > strong {
+  font-size: 26px;
+}
+.world-tactical .solar-event-data > strong {
+  font-size: 18px;
+}
+.world-info {
+  padding: 4px 2px 12px;
+}
+.info-big-number {
+  font: 42px var(--pixel);
+  color: #5a4247;
+  display: block;
+  margin: 10px 0 22px;
+}
+.world-info h3 {
+  font: 12px/1.9 var(--pixel);
+  color: #d4ae84;
+  margin: 0 0 20px;
+  letter-spacing: -0.3px;
+}
+.world-info p {
+  font-size: 19px;
+  line-height: 1.4;
+  color: #b9a9bb;
+  margin: 0 0 19px;
+}
+.world-info b {
+  font-weight: 400;
+  color: #d9b98e;
+}
+.world-info .launch-button {
+  margin-top: 23px;
+}
+.info-lock {
+  display: block;
+  border: 1px dashed #6c5156;
+  background: #211925;
+  color: #ac8690;
+  padding: 14px;
+  font: 7px/1.8 var(--pixel);
+}
+.info-resources {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.info-resources > span {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dashed #463448;
+  padding-bottom: 10px;
+  font-size: 13px;
+  letter-spacing: 0.7px;
+  color: #977f95;
+}
+.info-resources b {
+  font-size: 23px;
+  color: #e1b385;
+}
+.world-secondary {
+  background: #33222a;
+  border: 1px solid #8c5a48;
+  padding: 12px 16px;
+  font: 8px/1.8 var(--pixel);
+  color: #c79376;
+}
+.world-history article {
+  padding: 0 0 16px;
+  margin-bottom: 17px;
+  border-bottom: 1px dashed #51404c;
+}
+.world-history article > span {
+  font-size: 12px;
+  letter-spacing: 0.6px;
+  color: #c09575;
+}
+.world-history p {
+  font-size: 18px;
+  line-height: 1.4;
+  color: #b8a8bc;
+  margin: 8px 0 0;
+}
+.world-solar-emergency {
+  position: fixed;
+  z-index: 60;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(720px, calc(100vw - 32px));
+  padding: 23px;
+  border: 2px solid #ff8d62;
+  background: #391b26f5;
+  box-shadow:
+    0 0 0 100vmax #17081080,
+    6px 6px #31121d;
+  color: #efd0ae;
+}
+.solar-emergency-heading {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+.solar-emergency-heading > span {
+  font: 26px var(--pixel);
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 55px;
+  background: #ac4833;
+  color: #ffc891;
+  border: 1px solid #ef9164;
+  flex-shrink: 0;
+}
+.solar-emergency-heading > div {
+  font: 11px/1.9 var(--pixel);
+  color: #ffd9aa;
+  flex: 1;
+}
+.solar-emergency-heading > div > small {
+  font: 10px var(--terminal);
+  letter-spacing: 0.8px;
+  display: block;
+  color: #ca9a8f;
+  margin-top: 7px;
+}
+.solar-emergency-heading > strong {
+  font: 44px var(--pixel);
+  color: #ffaa6b;
+  font-weight: 400;
+  text-align: center;
+}
+.solar-emergency-heading > strong > small {
+  display: block;
+  font: 9px var(--terminal);
+  letter-spacing: 1px;
+  color: #c69383;
+  margin-top: 9px;
+}
+.solar-emergency-event {
+  margin: 24px 0 20px;
+  border-top: 1px dashed #85504f;
+  border-bottom: 1px dashed #85504f;
+  padding: 17px 0;
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+.solar-emergency-event > b {
+  font: 26px var(--pixel);
+  color: #ff9c6d;
+  flex-shrink: 0;
+}
+.solar-emergency-event > span {
+  font-size: 18px;
+  color: #e2bda1;
+  line-height: 1.3;
+}
+.solar-emergency-event small {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.8px;
+  color: #b88b93;
+  margin-top: 6px;
+}
+.solar-emergency-event > span:last-child {
+  margin-left: auto;
+  font-size: 10px;
+  color: #b68a8c;
+  text-align: right;
+  white-space: nowrap;
+}
+.solar-emergency-event > span:last-child b {
+  display: block;
+  font: 26px var(--terminal);
+  font-weight: 400;
+  color: #f3b77f;
+  margin-top: 5px;
+}
+.world-shield-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding: 21px 18px;
+  width: 100%;
+  background: #dd553b;
+  color: #ffe4bb;
+  border: 1px solid #ffb286;
+  box-shadow: 4px 4px #7e302f;
+  font: 10px/1.9 var(--pixel);
+  text-align: left;
+  min-height: 73px;
+}
+.world-shield-button > span {
+  font: 12px var(--terminal);
+  white-space: nowrap;
+  color: #fbc29f;
+}
+.world-shield-button:hover {
+  background: #f47a4d;
+}
+.world-solar-emergency > p {
+  font-size: 10px;
+  color: #bf9193;
+  letter-spacing: 0.7px;
+  margin: 18px 0 0;
+  text-align: center;
+}
+.iso-solar-alert .iso-world:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: #e6402725;
+  pointer-events: none;
+  animation: planet-flash 1.5s steps(1) 4;
+}
+.iso-solar-alert .world-hud {
+  border-color: #c35f42;
+}
+.iso-solar-alert .iso-topbar {
+  background: #2b1720;
+}
+.iso-solar-alert .iso-sol strong {
+  color: #ff8a60;
+}
+.iso-solar-alert .iso-header-status {
+  color: #eb9569;
+}
+@keyframes planet-flash {
+  35% {
+    opacity: 0.25;
+  }
+  65% {
+    opacity: 1;
+  }
+}
+@keyframes planet-shake {
+  0% {
+    translate: 1px 0;
+  }
+  50% {
+    translate: -2px 1px;
+  }
+  100% {
+    translate: 0 -1px;
+  }
+}
+@keyframes mission-bob {
+  50% {
+    translate: 0 -3px;
+  }
+}
+@media (min-width: 1600px) {
+  .iso-topbar {
+    padding-left: 42px;
+    padding-right: 42px;
+  }
+  .world-hud {
+    padding-left: 42px;
+    padding-right: 42px;
+  }
+  .world-dialogue {
+    margin-left: 42px;
+    margin-right: 42px;
+  }
+  .world-heading {
+    left: 42px;
+    top: 30px;
+  }
+  .world-heading h1 {
+    font-size: 20px;
+  }
+  .world-coordinate-card {
+    right: 42px;
+    top: 30px;
+    width: 215px;
+  }
+  .world-objective {
+    left: 42px;
+  }
+  .world-tools {
+    right: 42px;
+  }
+  .world-climate {
+    right: 42px;
+  }
+  .world-tactical {
+    right: 32px;
+    width: 590px;
+  }
+  .world-tactical.tactical-storm {
+    width: 760px;
+  }
+}
+@media (max-width: 1100px) {
+  .iso-topbar {
+    padding: 0 22px;
+    height: 62px;
+    min-height: 62px;
+  }
+  .iso-header-status {
+    font-size: 10px;
+    letter-spacing: 0.6px;
+  }
+  .world-hud {
+    padding: 10px 22px;
+  }
+  .world-resource {
+    padding: 0 12px;
+    gap: 7px;
+  }
+  .resource-glyph {
+    min-width: 18px;
+    font-size: 16px;
+  }
+  .world-resource-label {
+    font-size: 5px;
+    letter-spacing: 0;
+  }
+  .world-resource strong {
+    font-size: 23px;
+  }
+  .world-heading {
+    left: 22px;
+    top: 20px;
+    max-width: 440px;
+  }
+  .world-heading h1 {
+    font-size: 13px;
+  }
+  .world-coordinate-card {
+    right: 22px;
+    top: 20px;
+    width: 169px;
+    padding: 11px;
+  }
+  .world-coordinate-card > span:first-child {
+    font-size: 8px;
+  }
+  .world-coordinate-card > strong {
+    font-size: 6px;
+  }
+  .world-climate {
+    right: 22px;
+    top: 140px;
+    max-width: 185px;
+  }
+  .world-climate strong {
+    font-size: 16px;
+  }
+  .world-climate > span {
+    font-size: 9px;
+  }
+  .world-climate small {
+    font-size: 7px;
+  }
+  .world-objective {
+    left: 22px;
+    bottom: 24px;
+    gap: 9px;
+    padding: 10px;
+    max-width: calc(100% - 260px);
+  }
+  .world-objective > b {
+    font-size: 9px;
+    margin-left: 6px;
+  }
+  .world-dialogue {
+    margin: 0 22px;
+    gap: 14px;
+    padding: 16px;
+    min-height: 110px;
+    max-height: 160px;
+  }
+  .dialogue-copy p {
+    font-size: 17px;
+  }
+  .dialogue-meta {
+    font-size: 9px;
+  }
+  .dialogue-action {
+    min-width: 155px;
+    font-size: 7px;
+    gap: 10px;
+    padding: 0 11px;
+  }
+  .iso-controls {
+    padding: 0 22px;
+    font-size: 8px;
+    letter-spacing: 0;
+  }
+  .iso-controls kbd {
+    font-size: 8px;
+  }
+  .iso-controls > span {
+    gap: 4px;
+  }
+  .world-tools {
+    right: 22px;
+  }
+  .origin-overlay {
+    left: 22px;
+    width: 310px;
+    top: 23px;
+    bottom: 23px;
+    max-height: 505px;
+  }
+  .origin-overlay-header {
+    padding: 20px;
+  }
+  .origin-overlay-header h2 {
+    font-size: 21px;
+    margin-top: 14px;
+  }
+  .origin-choices {
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .origin-choice {
+    padding: 13px 10px;
+    gap: 10px;
+  }
+  .origin-choice strong {
+    font-size: 8px;
+  }
+  .origin-overlay-footer {
+    font-size: 8px;
+    padding: 14px;
+  }
+  .world-tactical {
+    top: 128px;
+    right: 18px;
+    bottom: 155px;
+    max-height: calc(100dvh - 283px);
+    width: 510px;
+  }
+  .world-tactical.tactical-storm {
+    width: 650px;
+  }
+  .building-label {
+    font-size: 5px;
+    padding: 6px 8px;
+    gap: 5px;
+  }
+  .world-complete-banner {
+    top: 16px;
+    max-width: 470px;
+    font-size: 6px;
+  }
+  .world-toast {
+    top: 14px;
+    font-size: 14px;
+    max-width: 65%;
+  }
+}
+@media (max-width: 760px) {
+  .iso-game {
+    min-height: 600px;
+  }
+  .iso-header-status {
+    display: none;
+  }
+  .iso-topbar {
+    height: 58px;
+    min-height: 58px;
+    padding: 0 16px;
+  }
+  .iso-brand {
+    gap: 10px;
+  }
+  .iso-brand > span {
+    width: 31px;
+    height: 31px;
+  }
+  .iso-brand svg {
+    width: 23px;
+  }
+  .iso-brand > div {
+    font-size: 7px;
+  }
+  .iso-brand small {
+    font-size: 10px;
+    letter-spacing: 1.4px;
+  }
+  .iso-header-actions {
+    gap: 10px;
+  }
+  .iso-sol {
+    gap: 6px;
+    font-size: 6px;
+  }
+  .iso-sol strong {
+    font-size: 21px;
+  }
+  .iso-sol small {
+    font-size: 11px;
+  }
+  .iso-icon-button {
+    min-width: 25px;
+    height: 27px;
+    font-size: 17px;
+    padding: 0 4px;
+  }
+  .iso-icon-button > span {
+    font-size: 7px;
+  }
+  .world-hud {
+    padding: 10px 16px;
+    gap: 0;
+  }
+  .world-resource {
+    padding: 0 8px;
+    gap: 0;
+  }
+  .resource-glyph {
+    display: none;
+  }
+  .world-resource-label {
+    font: 9px var(--terminal);
+    letter-spacing: 0.2px;
+  }
+  .world-resource strong {
+    font-size: 23px;
+  }
+  .world-resource small {
+    font-size: 11px;
+    margin-left: 2px;
+  }
+  .world-resource-bar {
+    height: 3px;
+  }
+  .world-resource-bar > i {
+    height: 3px;
+  }
+  .world-heading {
+    left: 16px;
+    top: 18px;
+    max-width: calc(100% - 170px);
+  }
+  .world-heading .eyebrow {
+    font-size: 5px;
+    gap: 6px;
+  }
+  .world-heading h1 {
+    font-size: 11px;
+    line-height: 1.8;
+    margin: 8px 0 6px;
+    letter-spacing: -0.3px;
+  }
+  .world-heading p {
+    font-size: 13px;
+    line-height: 1.2;
+  }
+  .world-coordinate-card {
+    right: 16px;
+    top: 17px;
+    width: 145px;
+    padding: 9px;
+  }
+  .world-coordinate-card > span:first-child {
+    font-size: 7px;
+    letter-spacing: 0.3px;
+  }
+  .world-coordinate-card > strong {
+    font-size: 5px;
+    margin: 7px 0;
+  }
+  .world-coordinate-card > div {
+    font-size: 10px;
+  }
+  .coordinate-link {
+    font-size: 7px;
+    letter-spacing: 0.2px;
+    margin-top: 8px;
+    gap: 4px;
+  }
+  .world-climate {
+    top: 130px;
+    right: 16px;
+    max-width: 165px;
+  }
+  .world-climate strong {
+    font-size: 14px;
+  }
+  .world-climate > span {
+    font-size: 8px;
+  }
+  .world-climate small {
+    font-size: 7px;
+  }
+  .world-dialogue {
+    margin: 0 16px;
+    min-height: 120px;
+    max-height: 178px;
+    padding: 14px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .dialogue-portrait {
+    width: 34px;
+    gap: 6px;
+    align-self: flex-start;
+    margin-top: 5px;
+  }
+  .dialogue-portrait > svg {
+    width: 34px;
+    height: 34px;
+  }
+  .dialogue-portrait > span {
+    font-size: 6px;
+    letter-spacing: 0.5px;
+  }
+  .dialogue-copy {
+    flex-basis: calc(100% - 50px);
+  }
+  .dialogue-meta {
+    font-size: 8px;
+    letter-spacing: 0.2px;
+    align-items: flex-start;
+  }
+  .dialogue-meta > span {
+    max-width: 70%;
+  }
+  .dialogue-meta > button {
+    font-size: 8px;
+  }
+  .dialogue-meta b {
+    margin: 0 3px;
+  }
+  .dialogue-copy p {
+    font-size: 17px;
+    min-height: 38px;
+    line-height: 1.25;
+    margin-top: 7px;
+    max-height: 86px;
+    overflow: auto;
+  }
+  .dialogue-action {
+    margin-left: auto;
+    min-width: 165px;
+    min-height: 35px;
+    font-size: 7px;
+    padding: 0 11px;
+    gap: 14px;
+    margin-top: -3px;
+  }
+  .iso-controls {
+    padding: 0 16px;
+    height: 29px;
+    min-height: 29px;
+    font-size: 8px;
+  }
+  .iso-controls > span:last-child {
+    display: none;
+  }
+  .iso-controls > span {
+    width: 100%;
+    justify-content: center;
+    gap: 6px;
+  }
+  .world-tools {
+    right: 16px;
+    bottom: 21px;
+    gap: 4px;
+  }
+  .world-tools > span {
+    display: none;
+  }
+  .world-tools button {
+    width: 28px;
+    height: 29px;
+    font-size: 22px;
+  }
+  .world-objective {
+    left: 16px;
+    bottom: 20px;
+    max-width: calc(100% - 136px);
+    padding: 9px;
+    gap: 8px;
+  }
+  .objective-marker {
+    width: 23px;
+    height: 27px;
+    font-size: 11px;
+  }
+  .world-objective > span:nth-child(2) {
+    font-size: 8px;
+    letter-spacing: 0.5px;
+  }
+  .world-objective strong {
+    font-size: 7px;
+    line-height: 1.5;
+    max-width: 180px;
+    margin-top: 5px;
+  }
+  .world-objective > b {
+    display: none;
+  }
+  .world-scale {
+    bottom: 5px;
+    font-size: 7px;
+    gap: 6px;
+  }
+  .world-scale > i {
+    width: 18px;
+  }
+  .building-label {
+    font-size: 5px;
+    min-height: 26px;
+    padding: 5px 6px;
+    gap: 4px;
+  }
+  .building-index {
+    font-size: 9px;
+    padding-right: 4px;
+  }
+  .mission-mark {
+    width: 17px;
+    height: 21px;
+    font-size: 10px;
+    top: -15px;
+    right: -9px;
+  }
+  .player-marker {
+    font-size: 8px;
+  }
+  .origin-overlay {
+    left: 50%;
+    transform: translateX(-50%);
+    top: 15px;
+    bottom: 15px;
+    width: 325px;
+    max-height: 465px;
+  }
+  .origin-overlay-header {
+    padding: 19px 20px 15px;
+  }
+  .origin-overlay-header .eyebrow {
+    font-size: 5px;
+  }
+  .origin-overlay-header h2 {
+    font-size: 19px;
+    line-height: 1.5;
+    margin: 13px 0 8px;
+  }
+  .origin-overlay-header p {
+    font-size: 17px;
+  }
+  .origin-choice {
+    padding: 11px 12px;
+    gap: 11px;
+  }
+  .origin-choice strong {
+    font-size: 9px;
+  }
+  .origin-choice small {
+    font-size: 8px;
+  }
+  .origin-symbol {
+    font-size: 31px;
+  }
+  .origin-bonus {
+    font-size: 13px;
+  }
+  .origin-penalty {
+    font-size: 11px;
+  }
+  .origin-overlay-footer {
+    padding: 13px 17px;
+    font-size: 8px;
+  }
+  .collapse-warning {
+    top: 20px;
+    min-width: 0;
+    width: calc(100% - 36px);
+    max-width: 460px;
+    padding: 12px;
+    gap: 10px;
+  }
+  .collapse-warning > div {
+    font-size: 9px;
+  }
+  .collapse-warning small {
+    font-size: 9px;
+  }
+  .collapse-warning > span {
+    width: 25px;
+    height: 32px;
+    font-size: 18px;
+  }
+  .collapse-warning > b {
+    font-size: 20px;
+  }
+  .world-tactical,
+  .world-tactical.tactical-storm {
+    top: 127px;
+    left: 15px;
+    right: 15px;
+    bottom: 164px;
+    width: auto;
+    max-width: none;
+    max-height: calc(100dvh - 291px);
+  }
+  .tactical-header {
+    padding: 13px 15px;
+    gap: 10px;
+  }
+  .tactical-header > div > span {
+    font-size: 9px;
+  }
+  .tactical-header h2 {
+    font-size: 9px;
+  }
+  .tactical-body {
+    padding: 16px;
+  }
+  .tactical-footer {
+    font-size: 7px;
+    letter-spacing: 0.4px;
+    padding: 8px 14px;
+  }
+  .world-tactical .system-card > p {
+    font-size: 13px;
+    min-height: 65px;
+  }
+  .world-tactical .system-heading strong {
+    font-size: 7px;
+  }
+  .world-tactical .system-heading > span:nth-child(2) {
+    font-size: 8px;
+  }
+  .world-tactical .system-glyph {
+    font-size: 23px;
+    width: 22px;
+  }
+  .world-tactical .system-live {
+    font-size: 8px;
+  }
+  .world-tactical .power-switch > button > span {
+    font-size: 8px;
+  }
+  .world-tactical .scope-screen {
+    min-height: 170px;
+  }
+  .world-tactical .science-note summary {
+    font-size: 13px;
+  }
+  .world-info p {
+    font-size: 18px;
+  }
+  .world-info h3 {
+    font-size: 11px;
+  }
+  .world-toast {
+    top: 15px;
+    max-width: calc(100% - 40px);
+    width: max-content;
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+  .eva-route-card {
+    left: 16px;
+    bottom: 21px;
+    max-width: calc(100% - 135px);
+    padding: 11px 12px;
+    gap: 7px;
+  }
+  .eva-route-card > div {
+    font-size: 8px;
+  }
+  .eva-route-card strong {
+    font-size: 17px;
+  }
+  .eva-route-card small {
+    font-size: 8px;
+    line-height: 1.3;
+  }
+  .world-complete-banner {
+    width: calc(100% - 32px);
+    max-width: 540px;
+    top: 14px;
+    font-size: 6px;
+    gap: 8px;
+    padding: 11px 13px;
+  }
+  .world-solar-emergency {
+    padding: 19px;
+    width: calc(100% - 30px);
+  }
+  .solar-emergency-heading {
+    gap: 11px;
+  }
+  .solar-emergency-heading > div {
+    font-size: 9px;
+    line-height: 1.8;
+  }
+  .solar-emergency-heading > span {
+    width: 36px;
+    height: 43px;
+    font-size: 22px;
+  }
+  .solar-emergency-heading > div > small {
+    font-size: 9px;
+    letter-spacing: 0.2px;
+  }
+  .solar-emergency-heading > strong {
+    font-size: 34px;
+  }
+  .solar-emergency-heading > strong > small {
+    font-size: 8px;
+  }
+  .solar-emergency-event {
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 19px 0 17px;
+    padding: 15px 0;
+  }
+  .solar-emergency-event > b {
+    font-size: 23px;
+  }
+  .solar-emergency-event > span {
+    font-size: 17px;
+  }
+  .solar-emergency-event small {
+    font-size: 8px;
+    letter-spacing: 0.4px;
+  }
+  .world-shield-button {
+    font-size: 9px;
+    padding: 18px 14px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 9px;
+    line-height: 1.9;
+  }
+  .world-shield-button > span {
+    font-size: 12px;
+  }
+  .world-solar-emergency > p {
+    font-size: 9px;
+    line-height: 1.4;
+    letter-spacing: 0.3px;
+  }
+}
+@media (max-width: 480px) {
+  .iso-game {
+    min-height: 600px;
+  }
+  .iso-topbar {
+    padding: 0 13px;
+    height: 55px;
+    min-height: 55px;
+  }
+  .iso-brand > div {
+    font-size: 6px;
+  }
+  .iso-brand > span {
+    width: 29px;
+    height: 29px;
+  }
+  .iso-brand small {
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+  .iso-header-actions {
+    gap: 7px;
+  }
+  .iso-sol {
+    gap: 4px;
+    font-size: 5px;
+  }
+  .iso-sol strong {
+    font-size: 19px;
+  }
+  .iso-icon-button > span {
+    display: none;
+  }
+  .world-hud {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding: 10px 13px;
+    row-gap: 10px;
+  }
+  .world-resource {
+    padding: 0 9px;
+  }
+  .world-resource:nth-child(4) {
+    padding-right: 0;
+  }
+  .world-resource:nth-child(5) {
+    border: 0;
+    padding-left: 0;
+  }
+  .world-resource:nth-child(7) {
+    grid-column: 3/5;
+    padding-right: 0;
+  }
+  .world-resource:nth-child(7) > div {
+    max-width: 100px;
+  }
+  .world-resource-label {
+    font-size: 9px;
+    letter-spacing: 0.4px;
+  }
+  .world-resource strong {
+    font-size: 22px;
+    line-height: 1.05;
+    margin-top: 5px;
+  }
+  .world-resource-bar {
+    margin-top: 5px;
+  }
+  .resource-glyph {
+    display: block;
+    font-size: 14px;
+    min-width: 18px;
+    margin-right: 5px;
+  }
+  .world-resource:nth-child(4) .resource-glyph {
+    display: none;
+  }
+  .world-resource:nth-child(2) .resource-glyph {
+    display: none;
+  }
+  .world-resource:nth-child(3) .resource-glyph {
+    display: none;
+  }
+  .world-heading {
+    left: 13px;
+    top: 16px;
+    max-width: 65%;
+  }
+  .world-heading h1 {
+    font-size: 9px;
+    line-height: 1.9;
+    letter-spacing: -0.4px;
+    max-width: 255px;
+    margin-top: 7px;
+  }
+  .world-heading p {
+    font-size: 12px;
+    max-width: 230px;
+    line-height: 1.2;
+  }
+  .world-heading .eyebrow {
+    font-size: 5px;
+    letter-spacing: 0.2px;
+  }
+  .world-coordinate-card {
+    right: 13px;
+    top: 16px;
+    width: 99px;
+    padding: 7px;
+  }
+  .world-coordinate-card > span:first-child {
+    font-size: 6px;
+    letter-spacing: 0;
+  }
+  .world-coordinate-card > strong {
+    font: 9px/1.3 var(--terminal);
+    margin: 6px 0;
+    letter-spacing: 0.5px;
+  }
+  .world-coordinate-card > div {
+    font-size: 8px;
+  }
+  .coordinate-link {
+    font-size: 6px;
+    letter-spacing: 0;
+    margin-top: 7px;
+    gap: 3px;
+  }
+  .coordinate-link i {
+    width: 2px;
+    height: 2px;
+  }
+  .world-climate {
+    right: 13px;
+    top: 105px;
+    max-width: 160px;
+  }
+  .world-climate > span {
+    font-size: 7px;
+  }
+  .world-climate strong {
+    font-size: 12px;
+  }
+  .world-climate small {
+    font-size: 6px;
+  }
+  .building-label {
+    padding: 4px 5px;
+    min-width: 26px;
+    min-height: 25px;
+    justify-content: center;
+  }
+  .building-name {
+    display: none;
+  }
+  .building-label.mission-active .building-name {
+    display: inline;
+    font-size: 5px;
+    max-width: 90px;
+    white-space: normal;
+    text-align: left;
+  }
+  .building-index {
+    border: 0;
+    padding: 0;
+    font-size: 11px;
+  }
+  .building-label.mission-active .building-index {
+    border-right: 1px solid #605042;
+    padding-right: 5px;
+  }
+  .mission-mark {
+    top: -14px;
+    right: -8px;
+  }
+  .player-marker {
+    font-size: 7px;
+    gap: 2px;
+  }
+  .world-dialogue {
+    margin: 0 13px;
+    padding: 12px 11px;
+    gap: 10px;
+    min-height: 124px;
+    max-height: 180px;
+  }
+  .dialogue-portrait {
+    width: 27px;
+    gap: 5px;
+    margin-top: 6px;
+  }
+  .dialogue-portrait > svg {
+    width: 27px;
+    height: 30px;
+  }
+  .dialogue-portrait > span {
+    font-size: 5px;
+    letter-spacing: 0.3px;
+  }
+  .dialogue-copy {
+    flex-basis: calc(100% - 40px);
+  }
+  .dialogue-copy p {
+    font-size: 16px;
+    line-height: 1.2;
+    max-height: 76px;
+    min-height: 38px;
+    margin-top: 7px;
+  }
+  .dialogue-meta {
+    font-size: 7px;
+    line-height: 1.3;
+    letter-spacing: 0.1px;
+    gap: 6px;
+  }
+  .dialogue-meta > span {
+    max-width: 71%;
+    line-height: 1.4;
+  }
+  .dialogue-meta > button {
+    font-size: 7px;
+  }
+  .dialogue-meta > button > span {
+    padding: 0 2px;
+    margin-left: 2px;
+  }
+  .dialogue-action {
+    min-height: 33px;
+    min-width: 153px;
+    font-size: 6px;
+    gap: 12px;
+    margin-top: -5px;
+    padding: 0 10px;
+  }
+  .iso-controls {
+    padding: 0 11px;
+    min-height: 26px;
+    height: 26px;
+    font-size: 7px;
+  }
+  .iso-controls kbd {
+    font-size: 7px;
+    padding: 0 2px;
+  }
+  .iso-controls > span {
+    gap: 4px;
+  }
+  .iso-controls i {
+    margin: 0 1px;
+    width: 2px;
+    height: 2px;
+  }
+  .world-tools {
+    right: 13px;
+    bottom: 16px;
+    gap: 3px;
+  }
+  .world-tools button {
+    width: 25px;
+    height: 27px;
+    font-size: 20px;
+  }
+  .world-objective {
+    left: 13px;
+    bottom: 16px;
+    max-width: calc(100% - 114px);
+    gap: 7px;
+    padding: 8px;
+  }
+  .objective-marker {
+    width: 20px;
+    height: 26px;
+    font-size: 10px;
+  }
+  .world-objective > span:nth-child(2) {
+    font-size: 7px;
+  }
+  .world-objective strong {
+    font: 14px var(--terminal);
+    max-width: 150px;
+    line-height: 1.05;
+    margin-top: 4px;
+    letter-spacing: 0.2px;
+  }
+  .world-scale {
+    display: none;
+  }
+  .origin-overlay {
+    top: 10px;
+    bottom: 10px;
+    width: calc(100% - 26px);
+    max-width: 337px;
+    max-height: 435px;
+  }
+  .origin-overlay-header {
+    padding: 16px 18px 13px;
+  }
+  .origin-overlay-header .eyebrow {
+    font-size: 5px;
+  }
+  .origin-overlay-header h2 {
+    font-size: 18px;
+    line-height: 1.45;
+    margin: 10px 0 7px;
+  }
+  .origin-overlay-header p {
+    font-size: 16px;
+  }
+  .origin-choices {
+    padding: 0 12px;
+    gap: 7px;
+  }
+  .origin-choice {
+    padding: 9px 11px;
+    gap: 10px;
+  }
+  .origin-choice small {
+    font-size: 8px;
+  }
+  .origin-choice strong {
+    font-size: 8px;
+  }
+  .origin-choice > span:nth-child(2) {
+    gap: 4px;
+  }
+  .origin-bonus {
+    font-size: 13px;
+  }
+  .origin-penalty {
+    font-size: 11px;
+  }
+  .origin-symbol {
+    font-size: 29px;
+    min-width: 28px;
+  }
+  .origin-overlay-footer {
+    padding: 11px 16px;
+    font-size: 7px;
+    letter-spacing: 0.3px;
+  }
+  .collapse-warning {
+    width: calc(100% - 26px);
+    top: 14px;
+    padding: 10px;
+    gap: 8px;
+  }
+  .collapse-warning > div {
+    font-size: 8px;
+  }
+  .collapse-warning > span {
+    width: 23px;
+    height: 29px;
+    font-size: 16px;
+  }
+  .collapse-warning small {
+    font-size: 8px;
+    letter-spacing: 0.2px;
+    line-height: 1.2;
+  }
+  .collapse-warning > b {
+    font-size: 18px;
+  }
+  .world-tactical,
+  .world-tactical.tactical-storm {
+    top: 169px;
+    bottom: 155px;
+    left: 10px;
+    right: 10px;
+    max-height: calc(100dvh - 324px);
+  }
+  .tactical-header {
+    padding: 11px 13px;
+  }
+  .tactical-header h2 {
+    font-size: 8px;
+  }
+  .tactical-header > div > span {
+    font-size: 8px;
+  }
+  .tactical-body {
+    padding: 14px 12px;
+  }
+  .tactical-footer {
+    font-size: 6px;
+    padding: 8px 12px;
+    letter-spacing: 0.3px;
+  }
+  .world-tactical .chapter-intro {
+    font-size: 18px;
+  }
+  .world-tactical .chapter-intro > span {
+    font-size: 16px;
+  }
+  .world-tactical .retro-slider > span:first-child {
+    font-size: 6px;
+    gap: 5px;
+  }
+  .world-tactical .retro-slider strong {
+    font-size: 23px;
+  }
+  .world-tactical .chemical-meter {
+    padding: 12px 10px;
+  }
+  .world-tactical .chemical-meter > div:first-child {
+    font-size: 9px;
+  }
+  .world-tactical .risk-detail {
+    font-size: 9px;
+  }
+  .world-tactical .reaction-status {
+    font-size: 15px;
+  }
+  .world-tactical .launch-button {
+    font-size: 7px;
+    min-height: 44px;
+  }
+  .world-tactical .science-note summary {
+    font-size: 13px;
+    gap: 7px;
+  }
+  .world-tactical .budget-number > strong {
+    font-size: 30px;
+  }
+  .world-tactical .budget-number > span {
+    font-size: 20px;
+  }
+  .world-tactical .budget-number small {
+    font-size: 8px;
+  }
+  .world-tactical .budget-body {
+    padding: 13px;
+  }
+  .world-tactical .budget-rules {
+    font-size: 9px;
+  }
+  .world-tactical .system-heading strong {
+    font: 15px/1.05 var(--terminal);
+    margin-top: 4px;
+  }
+  .world-tactical .system-heading > span:nth-child(2) {
+    font-size: 7px;
+  }
+  .world-tactical .system-glyph {
+    font-size: 20px;
+    width: 21px;
+  }
+  .world-tactical .system-card {
+    padding: 11px 8px;
+  }
+  .world-tactical .system-card > p {
+    min-height: 91px;
+    font-size: 12px;
+    line-height: 1.3;
+    margin: 11px 0;
+  }
+  .world-tactical .systems-grid {
+    gap: 8px;
+  }
+  .world-tactical .power-switch {
+    gap: 3px;
+  }
+  .world-tactical .power-switch > button {
+    padding: 9px 2px 7px;
+  }
+  .world-tactical .power-switch > button > span {
+    font-size: 7px;
+  }
+  .world-tactical .power-switch > button > strong {
+    font-size: 18px;
+  }
+  .world-tactical .system-live {
+    font-size: 7px;
+    line-height: 1.3;
+  }
+  .world-tactical .chapter-readout strong {
+    font-size: 21px;
+  }
+  .world-tactical .scope-screen {
+    min-height: 150px;
+  }
+  .world-tactical .scope-panel > .panel-bar {
+    font: 9px var(--terminal);
+    padding: 0 9px;
+  }
+  .world-tactical .scope-status {
+    font-size: 8px;
+  }
+  .world-tactical .scope-legend {
+    font-size: 8px;
+    gap: 10px;
+    padding: 9px 8px;
+  }
+  .world-tactical .signal-readouts > div > span {
+    font-size: 7px;
+  }
+  .world-tactical .signal-readouts strong {
+    font-size: 21px;
+  }
+  .world-tactical .link-progress > div:first-child {
+    font-size: 9px;
+  }
+  .world-tactical .rescue-controls .panel-bar {
+    font-size: 6px;
+  }
+  .world-tactical .signal-dials {
+    gap: 14px;
+  }
+  .world-tactical .signal-dial > span:first-child {
+    font-size: 6px;
+  }
+  .world-tactical .signal-dial strong {
+    font-size: 21px;
+  }
+  .world-info p {
+    font-size: 17px;
+  }
+  .world-info h3 {
+    font-size: 10px;
+  }
+  .info-big-number {
+    font-size: 35px;
+    margin-top: 7px;
+    margin-bottom: 18px;
+  }
+  .info-lock {
+    font-size: 6px;
+  }
+  .world-history p {
+    font-size: 16px;
+  }
+  .world-history article > span {
+    font-size: 10px;
+  }
+  .world-toast {
+    max-width: calc(100% - 26px);
+    font-size: 13px;
+    top: 12px;
+    padding: 9px 11px;
+  }
+  .eva-route-card {
+    left: 13px;
+    bottom: 17px;
+    max-width: calc(100% - 112px);
+    padding: 10px;
+    gap: 6px;
+  }
+  .eva-route-card strong {
+    font-size: 15px;
+  }
+  .eva-route-card small {
+    font-size: 7px;
+    line-height: 1.3;
+  }
+  .world-complete-banner {
+    width: calc(100% - 26px);
+    top: 11px;
+    font-size: 5px;
+    line-height: 1.9;
+    padding: 11px 10px;
+    gap: 7px;
+  }
+  .world-solar-emergency {
+    padding: 16px 13px;
+    width: calc(100% - 24px);
+  }
+  .solar-emergency-heading {
+    gap: 9px;
+  }
+  .solar-emergency-heading > div {
+    font-size: 7px;
+    line-height: 2;
+  }
+  .solar-emergency-heading > span {
+    width: 29px;
+    height: 36px;
+    font-size: 19px;
+  }
+  .solar-emergency-heading > div > small {
+    font-size: 8px;
+    line-height: 1.3;
+  }
+  .solar-emergency-heading > strong {
+    font-size: 29px;
+  }
+  .solar-emergency-heading > strong > small {
+    font-size: 7px;
+  }
+  .solar-emergency-event > b {
+    font-size: 21px;
+  }
+  .solar-emergency-event > span {
+    font-size: 15px;
+  }
+  .solar-emergency-event small {
+    font-size: 8px;
+  }
+  .solar-emergency-event > span:last-child {
+    font-size: 8px;
+  }
+  .solar-emergency-event > span:last-child b {
+    font-size: 24px;
+  }
+  .world-shield-button {
+    font-size: 8px;
+    padding: 17px 12px;
+    line-height: 1.9;
+  }
+  .world-solar-emergency > p {
+    font-size: 8px;
+    line-height: 1.4;
+  }
+}
+@media (max-height: 740px) and (min-width: 761px) {
+  .iso-game {
+    min-height: 580px;
+  }
+  .iso-topbar {
+    height: 54px;
+    min-height: 54px;
+  }
+  .world-hud {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+  .world-resource strong {
+    font-size: 21px;
+  }
+  .world-dialogue {
+    min-height: 100px;
+    padding: 13px 17px;
+  }
+  .dialogue-copy p {
+    font-size: 16px;
+    min-height: 40px;
+  }
+  .iso-controls {
+    height: 27px;
+    min-height: 27px;
+  }
+  .world-heading {
+    top: 16px;
+  }
+  .world-coordinate-card {
+    top: 16px;
+  }
+  .world-climate {
+    top: 127px;
+  }
+  .world-heading h1 {
+    font-size: 12px;
+  }
+  .origin-overlay {
+    top: 13px;
+    bottom: 13px;
+    max-height: 420px;
+    width: 300px;
+  }
+  .origin-overlay-header {
+    padding: 15px 18px 11px;
+  }
+  .origin-overlay-header h2 {
+    font-size: 18px;
+    margin: 11px 0 8px;
+    line-height: 1.5;
+  }
+  .origin-overlay-header p {
+    font-size: 16px;
+  }
+  .origin-choice {
+    padding: 9px 11px;
+  }
+  .origin-choice strong {
+    font-size: 8px;
+  }
+  .origin-choice small {
+    font-size: 8px;
+  }
+  .origin-bonus {
+    font-size: 12px;
+  }
+  .origin-penalty {
+    font-size: 11px;
+  }
+  .origin-overlay-footer {
+    padding: 12px 16px;
+    font-size: 7px;
+  }
+  .world-tactical,
+  .world-tactical.tactical-storm {
+    top: 117px;
+    bottom: 143px;
+    max-height: calc(100dvh - 260px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .iso-game *,
+  .iso-game *:before,
+  .iso-game *:after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .world-surface {
+    will-change: auto;
+  }
+}
+.world-solar-emergency {
+  margin: 0;
+  max-width: none;
+  overflow: visible;
+}
+.world-solar-emergency::backdrop {
+  background: #1c0c1480;
+}
+.iso-icon-button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+@media (max-width: 480px) {
+  .building-label:before {
+    content: "";
+    position: absolute;
+    inset: -8px;
+  }
+}
+
+@media (max-width: 760px) {
+  .world-complete-banner {
+    top: 105px;
+  }
+  .iso-world:has(.world-complete-banner) .world-climate {
+    display: none;
+  }
+}
+/* Sol 28 — Jezero expedition and terminal mission record. */
+.world-complete-banner {
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.world-complete-banner button {
+  font-size: 9px;
+  padding: 10px 14px;
+  margin: 0;
+}
+.rover-hud {
+  display: grid;
+  grid-template-columns: 1fr 1fr 0.8fr;
+  gap: 30px;
+  padding: 16px 32px;
+  border-bottom: 1px solid #3f3239;
+  background: #17141e;
+  z-index: 5;
+  flex-shrink: 0;
+}
+.rover-twin > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.rover-twin span {
+  font: 8px/1.6 var(--pixel);
+  color: #b2a2a1;
+}
+.rover-twin strong {
+  font-size: 30px;
+  line-height: 1;
+  color: var(--resource);
+  font-weight: 400;
+}
+.rover-twin strong small {
+  font-size: 17px;
+  margin-left: 4px;
+}
+.rover-twin-bar {
+  height: 12px;
+  border: 1px solid #4f4245;
+  padding: 2px;
+  margin-top: 9px;
+  background: #0d1018;
+}
+.rover-twin-bar i {
+  display: block;
+  height: 100%;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--resource) 0 9px,
+    transparent 9px 12px
+  );
+  transition: width 0.4s;
+}
+.rover-environment {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 7px;
+  color: #aca0a2;
+  font-size: 16px;
+}
+.rover-environment span:first-child {
+  color: #e0c293;
+  font-size: 18px;
+}
+.rover-environment b {
+  color: #f8ddba;
+}
+.jezero-world {
+  min-height: 470px;
+  background: radial-gradient(
+    ellipse at 48% 57%,
+    #44252c 0,
+    #20171f 58%,
+    #12121c 92%
+  );
+  transition: background 1.5s;
+}
+.jezero-night .jezero-world {
+  background: radial-gradient(
+    ellipse at 48% 55%,
+    #272638 0,
+    #141729 58%,
+    #0b0e1c 95%
+  );
+}
+.jezero-canvas-container {
+  position: absolute;
+  inset: 20px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.jezero-canvas-container canvas {
+  image-rendering: pixelated;
+  touch-action: none;
+  outline: none;
+}
+.jezero-canvas-container canvas:focus-visible {
+  outline: 1px dashed #90756b;
+  outline-offset: -5px;
+}
+.jezero-world .world-heading {
+  z-index: 2;
+  pointer-events: none;
+}
+.jezero-world .world-heading h1 {
+  line-height: 1.65;
+}
+.jezero-world .world-heading h1 em {
+  font-style: normal;
+  color: #ec8b66;
+}
+.jezero-map-id {
+  position: absolute;
+  top: 31px;
+  right: 32px;
+  display: grid;
+  gap: 7px;
+  text-align: right;
+  z-index: 2;
+}
+.jezero-map-id > span {
+  font: 9px var(--pixel);
+  color: #d39370;
+}
+.jezero-map-id strong {
+  font-size: 19px;
+  font-weight: 400;
+  color: #bfb0ac;
+}
+.jezero-map-id small {
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: #766e7c;
+}
+.jezero-extraction-label {
+  position: absolute;
+  top: 31%;
+  left: 70%;
+  font: 7px/1.6 var(--pixel);
+  color: #c2f1e8;
+  background: #171c27e6;
+  border: 1px solid #426266;
+  padding: 9px 10px;
+  pointer-events: none;
+}
+.jezero-extraction-label b {
+  margin-left: 8px;
+  color: #5ce1e6;
+}
+.jezero-legend {
+  position: absolute;
+  left: 32px;
+  bottom: 35px;
+  display: grid;
+  gap: 9px;
+  font-size: 15px;
+  color: #c9aea0;
+}
+.jezero-legend span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.jezero-legend i {
+  height: 4px;
+  width: 17px;
+  display: inline-block;
+}
+.jezero-legend small {
+  font-size: 11px;
+  color: #847681;
+}
+.route-planner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -40%);
+  width: min(620px, calc(100% - 36px));
+  padding: 25px;
+  background: #14121df5;
+  border: 1px solid #705043;
+  box-shadow:
+    0 5px #251e29,
+    5px 0 #251e29,
+    -5px 0 #251e29,
+    0 -4px #251e29;
+  z-index: 4;
+}
+.route-planner > h2 {
+  font: 12px/1.8 var(--pixel);
+  margin: 10px 0 8px;
+}
+.route-planner > p {
+  font-size: 18px;
+  color: #a99a9f;
+  margin: 0 0 18px;
+}
+.route-planner > small {
+  display: block;
+  color: #877f8d;
+  font-size: 14px;
+  margin-top: 15px;
+  line-height: 1.3;
+}
+.route-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.route-option {
+  background: #201a23;
+  text-align: left;
+  padding: 18px;
+  border: 1px solid #64503e;
+  color: #ffb000;
+  box-shadow: 3px 3px #0c0d15;
+  transition: transform 0.15s;
+}
+.route-option:hover {
+  background: #30212a;
+  transform: translateY(-3px);
+}
+.route-long {
+  border-color: #365a63;
+  color: #5ce1e6;
+  background: #182029;
+}
+.route-long:hover {
+  background: #1c313b;
+}
+.route-option > span {
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+.route-option > strong {
+  display: block;
+  font-size: 49px;
+  font-weight: 400;
+  line-height: 1.1;
+  margin-top: 10px;
+}
+.route-option > strong small {
+  font-size: 20px;
+}
+.route-option h3 {
+  font: 9px/1.6 var(--pixel);
+  margin: 7px 0 12px;
+}
+.route-option p {
+  font: 17px/1.15 var(--terminal);
+  color: #c3aeb0;
+  min-height: 40px;
+  margin: 0 0 15px;
+}
+.route-option > div {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #978d9b;
+}
+.route-option > div b {
+  font-size: 14px;
+  color: inherit;
+}
+.route-option > em {
+  display: block;
+  font: 7px/1.8 var(--pixel);
+  font-style: normal;
+  border-top: 1px solid #ffffff15;
+  margin-top: 12px;
+  padding-top: 13px;
+}
+.rover-route-progress {
+  position: absolute;
+  left: 32px;
+  top: 185px;
+  width: 220px;
+  pointer-events: none;
+}
+.rover-route-progress > span {
+  font-size: 16px;
+  color: #bdb1ab;
+  display: flex;
+  justify-content: space-between;
+}
+.rover-route-progress b {
+  color: #f3d5a9;
+  font-weight: 400;
+}
+.rover-route-progress > div {
+  display: flex;
+  gap: 4px;
+  margin: 10px 0;
+}
+.rover-route-progress i {
+  flex: 1;
+  height: 6px;
+  background: #4a3438;
+}
+.rover-route-progress .done {
+  background: #afcb83;
+}
+.rover-route-progress .current {
+  background: #e4a65c;
+}
+.rover-route-progress small {
+  font-size: 11px;
+  letter-spacing: 0.7px;
+  color: #a58677;
+}
+.rover-console {
+  position: absolute;
+  right: 28px;
+  bottom: 30px;
+  width: 294px;
+  background: #14121dee;
+  border: 1px solid #5a4241;
+  box-shadow: 4px 4px #0d0d16;
+  padding: 17px;
+  z-index: 3;
+}
+.rover-console-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #e3bc8d;
+  margin-bottom: 13px;
+}
+.rover-console-heading b {
+  font-size: 10px;
+  font-weight: 400;
+  color: #7d8d7b;
+}
+.heat-switch {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid #47404d;
+  padding: 3px;
+  gap: 3px;
+}
+.heat-switch button {
+  font: 7px/1.8 var(--pixel);
+  background: #211d29;
+  border: 1px solid transparent;
+  color: #b0a2ad;
+  padding: 10px 2px;
+}
+.heat-switch button[aria-pressed="true"] {
+  background: #4e3029;
+  border-color: #bf704d;
+  color: #ffc692;
+  box-shadow: inset 0 -3px #2b2024;
+}
+.heat-switch small {
+  font: 11px var(--terminal);
+  display: block;
+  margin-top: 5px;
+  white-space: nowrap;
+}
+.rover-forecast {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  padding: 14px 0;
+}
+.rover-forecast > span {
+  grid-column: 1/-1;
+  font-size: 12px;
+  color: #8c818e;
+  margin-bottom: 3px;
+}
+.rover-forecast b {
+  font-size: 22px;
+  font-weight: 400;
+  color: #d9d7bd;
+}
+.rover-forecast i {
+  font-size: 11px;
+  color: #897d89;
+  font-style: normal;
+}
+.rover-console .launch-button {
+  font-size: 7px;
+  padding: 14px 8px;
+  width: 100%;
+  margin: 0;
+  line-height: 1.7;
+}
+.rover-console > small {
+  display: block;
+  font-size: 13px;
+  color: #8b7d89;
+  line-height: 1.25;
+  margin-top: 12px;
+}
+.warn {
+  color: #ff866b !important;
+}
+.good {
+  color: #b1d48a !important;
+}
+.mission-dossier {
+  color: #e5decd;
+  background: #14121d;
+  border: 2px solid #96846b;
+  padding: 0;
+  margin: auto;
+  inset: 0;
+  position: fixed;
+  max-width: calc(100vw - 24px);
+  width: min(760px, calc(100% - 28px));
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+  box-shadow:
+    5px 5px #40323a,
+    -4px -4px #40323a;
+  font-family: var(--terminal);
+}
+.mission-dossier::backdrop {
+  background: #090c16c9;
+  backdrop-filter: blur(2px);
+}
+.dossier-masthead {
+  display: flex;
+  align-items: center;
+  gap: 21px;
+  border-bottom: 2px solid #8b795f;
+  padding: 14px 28px;
+  background: #211d27;
+}
+.nasa-pixel {
+  font: 15px var(--pixel);
+  letter-spacing: -2px;
+  color: #e1e0cc;
+  border: 2px solid #626e83;
+  border-radius: 0;
+  padding: 16px 10px;
+  position: relative;
+  transform: skewY(-4deg);
+}
+.nasa-pixel span {
+  color: #e17d5d;
+}
+.nasa-pixel i {
+  position: absolute;
+  font-size: 10px;
+  color: #5ce1e6;
+  right: -4px;
+  top: -5px;
+  font-style: normal;
+}
+.dossier-masthead > div {
+  font-size: 18px;
+  letter-spacing: 1.3px;
+  flex: 1;
+}
+.dossier-masthead small {
+  display: block;
+  color: #9a8f9d;
+  font-size: 12px;
+  letter-spacing: 1px;
+  margin-top: 5px;
+}
+.dossier-masthead > b {
+  font: 20px var(--pixel);
+  text-align: right;
+  color: #cfad7b;
+}
+.dossier-masthead > b small {
+  font: 11px var(--terminal);
+}
+.dossier-heading {
+  padding: 20px 28px 18px;
+}
+.dossier-heading h2 {
+  font: 20px/1.7 var(--pixel);
+  color: #bbd292;
+  margin: 13px 0 7px;
+  text-shadow: 3px 3px #384331;
+}
+.dossier-failed .dossier-heading h2 {
+  color: #f3876c;
+  text-shadow: 3px 3px #4a252a;
+}
+.dossier-heading p {
+  font-size: 20px;
+  color: #bbaeaf;
+  margin: 4px 0 18px;
+}
+.dossier-stamp {
+  font: 7px/1.7 var(--pixel);
+  border: 1px dashed #72816a;
+  padding: 8px 10px;
+  color: #a8bd8c;
+  display: inline-block;
+}
+.dossier-failed .dossier-stamp {
+  border-color: #b06a58;
+  color: #d48b74;
+}
+.dossier-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 0 28px;
+  border-top: 1px solid #4c414b;
+  border-left: 1px solid #4c414b;
+}
+.dossier-grid > div {
+  border-right: 1px solid #4c414b;
+  border-bottom: 1px solid #4c414b;
+  padding: 14px 17px;
+  min-width: 0;
+}
+.dossier-grid dt {
+  font: 7px/1.6 var(--pixel);
+  color: #9a8e9e;
+  margin-bottom: 12px;
+}
+.dossier-grid dd {
+  font: 25px/1.15 var(--terminal);
+  color: #e7d8b9;
+  margin: 0 0 6px;
+}
+.dossier-grid dd em {
+  font-size: 18px;
+  font-style: normal;
+  margin-left: 4px;
+}
+.dossier-grid small {
+  font-size: 12px;
+  line-height: 1.4;
+  color: #978790;
+}
+.dossier-flare {
+  grid-column: 1/-1;
+}
+.dossier-flare dd {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.dossier-flare dd b {
+  color: #ffb000;
+  font-weight: 400;
+}
+.data-source {
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: #a6b6ad;
+  border: 1px solid #435454;
+  padding: 5px 7px;
+}
+.dossier-flare p {
+  color: #bda8a5;
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 9px 0;
+}
+.dossier-flare a {
+  font-size: 12px;
+  color: #78c4c8;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.dossier-telemetry {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 22px;
+  margin: 18px 28px;
+  color: #9b8b93;
+  font-size: 13px;
+}
+.dossier-telemetry b {
+  font-weight: 400;
+  color: #d5c6b4;
+}
+.dossier-note {
+  font-size: 13px;
+  color: #807582;
+  margin: 14px 28px 20px;
+  line-height: 1.3;
+}
+.dossier-restart {
+  display: block;
+  width: calc(100% - 56px);
+  margin: 0 28px 26px !important;
+  font-size: 9px !important;
+  padding: 17px !important;
+  line-height: 1.8;
+}
+.dossier-restart > span {
+  float: right;
+}
+.dossier-restart small {
+  display: block;
+  font: 13px var(--terminal);
+  margin-top: 6px;
+  letter-spacing: 1px;
+}
+@media (min-width: 1500px) {
+  .jezero-canvas-container {
+    inset: 5px 180px 5px 60px;
+  }
+  .jezero-world .rover-console {
+    right: 40px;
+    width: 320px;
+  }
+}
+@media (max-width: 900px) {
+  .rover-hud {
+    gap: 16px;
+    padding: 13px 20px;
+    grid-template-columns: 1fr 1fr;
+  }
+  .rover-environment {
+    grid-column: 1/-1;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 14px;
+  }
+  .rover-environment span:first-child {
+    font-size: 14px;
+  }
+  .jezero-world .world-heading h1 {
+    font-size: 13px;
+  }
+  .jezero-map-id {
+    right: 20px;
+  }
+  .rover-route-progress {
+    top: 170px;
+    left: 24px;
+    width: 190px;
+  }
+  .rover-console {
+    width: 265px;
+    right: 20px;
+    bottom: 20px;
+  }
+  .jezero-extraction-label {
+    left: 67%;
+    top: 34%;
+    font-size: 6px;
+  }
+  .jezero-legend {
+    left: 24px;
+    bottom: 25px;
+  }
+  .route-planner {
+    top: 49%;
+    transform: translate(-50%, -35%);
+  }
+  .jezero-world {
+    min-height: 540px;
+  }
+}
+@media (max-width: 600px) {
+  .jezero-game {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+  .rover-hud {
+    padding: 13px 14px;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+  }
+  .rover-twin span {
+    font-size: 6px;
+  }
+  .rover-twin strong {
+    font-size: 25px;
+  }
+  .rover-twin-bar {
+    height: 10px;
+    margin-top: 7px;
+  }
+  .rover-environment {
+    gap: 12px;
+    font-size: 12px;
+  }
+  .rover-environment span:first-child {
+    font-size: 12px;
+  }
+  .jezero-world {
+    min-height: 850px;
+    flex: none;
+  }
+  .jezero-world .world-heading {
+    top: 23px;
+    left: 18px;
+  }
+  .jezero-world .world-heading h1 {
+    font-size: 12px;
+  }
+  .jezero-world .world-heading p {
+    font-size: 15px;
+  }
+  .jezero-map-id {
+    right: 15px;
+    top: 25px;
+    max-width: 128px;
+  }
+  .jezero-map-id > span {
+    font-size: 6px;
+  }
+  .jezero-map-id strong {
+    font-size: 14px;
+  }
+  .jezero-map-id small {
+    font-size: 9px;
+  }
+  .jezero-canvas-container {
+    inset: 110px 0 auto;
+    height: 355px;
+  }
+  .jezero-extraction-label {
+    left: auto;
+    right: 15px;
+    top: 210px;
+    font-size: 5px;
+  }
+  .jezero-legend {
+    left: 18px;
+    top: 448px;
+    bottom: auto;
+    font-size: 13px;
+    gap: 7px;
+  }
+  .jezero-legend small {
+    font-size: 10px;
+  }
+  .rover-route-progress {
+    left: 18px;
+    top: 123px;
+    width: 190px;
+  }
+  .rover-console {
+    left: 18px;
+    right: 18px;
+    bottom: 30px;
+    width: auto;
+    padding: 18px;
+  }
+  .rover-console .launch-button {
+    font-size: 8px;
+  }
+  .rover-forecast {
+    grid-template-columns: 1fr 1fr;
+  }
+  .rover-console > small {
+    font-size: 15px;
+  }
+  .route-planner {
+    top: 280px;
+    transform: translateX(-50%);
+    padding: 16px;
+    width: calc(100% - 32px);
+  }
+  .route-planner .eyebrow {
+    font-size: 5px;
+  }
+  .route-planner > h2 {
+    font-size: 9px;
+  }
+  .route-planner > p {
+    font-size: 17px;
+  }
+  .route-options {
+    gap: 9px;
+  }
+  .route-option {
+    padding: 13px 10px;
+  }
+  .route-option > strong {
+    font-size: 39px;
+  }
+  .route-option > span {
+    font-size: 10px;
+  }
+  .route-option h3 {
+    font-size: 7px;
+  }
+  .route-option p {
+    font-size: 15px;
+    min-height: 65px;
+  }
+  .route-option > div {
+    font-size: 10px;
+  }
+  .route-option > div b {
+    font-size: 12px;
+  }
+  .route-option > em {
+    font-size: 5px;
+  }
+  .route-planner > small {
+    font-size: 13px;
+  }
+  .jezero-world .world-scale {
+    bottom: 10px;
+    left: 18px;
+    right: auto;
+  }
+  .jezero-game .iso-controls {
+    height: auto;
+    min-height: 45px;
+    padding: 12px 15px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .mission-dossier {
+    max-height: calc(100dvh - 24px);
+    width: calc(100% - 24px);
+  }
+  .dossier-masthead {
+    padding: 17px 16px;
+    gap: 12px;
+  }
+  .nasa-pixel {
+    font-size: 10px;
+    padding: 13px 7px;
+  }
+  .dossier-masthead > div {
+    font-size: 13px;
+    letter-spacing: 0.6px;
+  }
+  .dossier-masthead small {
+    font-size: 9px;
+    letter-spacing: 0.5px;
+  }
+  .dossier-masthead > b {
+    font-size: 15px;
+  }
+  .dossier-heading {
+    padding: 20px 16px;
+  }
+  .dossier-heading h2 {
+    font-size: 14px;
+    line-height: 1.9;
+  }
+  .dossier-heading p {
+    font-size: 18px;
+  }
+  .dossier-stamp {
+    font-size: 5px;
+  }
+  .dossier-grid {
+    margin: 0 16px;
+  }
+  .dossier-grid > div {
+    padding: 14px 10px;
+  }
+  .dossier-grid dt {
+    font-size: 5px;
+  }
+  .dossier-grid dd {
+    font-size: 20px;
+    overflow-wrap: anywhere;
+  }
+  .dossier-grid small {
+    font-size: 10px;
+  }
+  .dossier-flare p {
+    font-size: 15px;
+  }
+  .dossier-telemetry {
+    margin: 17px 16px;
+    font-size: 12px;
+    gap: 8px 15px;
+  }
+  .dossier-note {
+    margin: 14px 16px;
+    font-size: 12px;
+  }
+  .dossier-restart {
+    width: calc(100% - 32px);
+    margin: 18px 16px !important;
+    font-size: 7px !important;
+  }
+  .dossier-restart small {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .jezero-legend {
+    top: 430px;
+    display: flex;
+    gap: 12px;
+    font-size: 12px;
+  }
+  .jezero-legend small {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rover-twin-bar i,
+  .jezero-world,
+  .route-option {
+    transition: none;
+  }
+}
+/* Clear guidance and touch controls, preserving the original pixel world. */
+.mission-goal {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 8px 30px;
+  background: #2c281b;
+  border-bottom: 1px solid #746035;
+  color: #ffe28c;
+  flex-shrink: 0;
+  z-index: 14;
+  font: 20px/1.15 var(--terminal);
+}
+.mission-goal p {
+  margin: 0;
+  flex: 1;
+  max-width: none;
+}
+.goal-arrow {
+  font-size: 24px;
+  color: #ffdf37;
+}
+.mission-goal button {
+  font: 7px/1.6 var(--pixel);
+  padding: 10px 13px;
+  border: 1px solid #a07c33;
+  background: #473824;
+  color: #ffe58d;
+  flex-shrink: 0;
+  box-shadow: 2px 2px #17151a;
+  min-height: 36px;
+}
+.prologue-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 10px 30px;
+  background: #15131e;
+  flex-shrink: 0;
+  z-index: 5;
+  border-bottom: 1px solid #34303b;
+}
+.prologue-steps button {
+  min-height: 48px;
+  font: 8px/1.7 var(--pixel);
+  padding: 9px 8px;
+  border: 1px solid #514351;
+  color: #b9aeb6;
+  background: #211b2a;
+  box-shadow: 2px 2px #0c0d15;
+}
+.prologue-steps button[aria-current="step"] {
+  color: #ffe58d;
+  border-color: #c1924e;
+  background: #413123;
+}
+.prologue-steps button:disabled {
+  color: #746773;
+  background: #19161f;
+  box-shadow: none;
+  cursor: default;
+}
+.prologue-steps button:not(:disabled):hover {
+  background: #57382b;
+  color: #ffe5bf;
+}
+.easy-game .world-heading h1 {
+  font-size: 16px;
+}
+.easy-game .world-heading p {
+  max-width: 350px;
+  font-size: 18px;
+  line-height: 1.2;
+}
+.easy-game .world-heading .eyebrow {
+  color: #b4a0a4;
+}
+.easy-game .world-coordinate-card {
+  min-width: 145px;
+}
+.easy-location .coordinate-link {
+  font-size: 12px;
+}
+.easy-game .origin-overlay {
+  max-height: calc(100% - 32px);
+  overflow-y: auto;
+}
+.easy-game .origin-overlay-header {
+  padding-bottom: 18px;
+}
+.easy-game .origin-overlay-header h2 {
+  font-size: 20px;
+  line-height: 1.7;
+}
+.easy-game .origin-overlay-header p {
+  font-size: 20px;
+  line-height: 1.2;
+}
+.easy-game .origin-choice {
+  min-height: 82px;
+}
+.easy-game .origin-bonus {
+  font-size: 17px;
+  line-height: 1.2;
+  white-space: nowrap;
+  letter-spacing: 0;
+}
+.easy-game .origin-overlay-footer {
+  font-size: 13px;
+}
+.easy-game .world-dialogue {
+  min-height: 106px;
+}
+.easy-game .dialogue-copy p {
+  font-size: 20px;
+  line-height: 1.3;
+  min-height: 52px;
+  max-height: 52px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.easy-game .dialogue-meta > button {
+  font-size: 12px;
+}
+.short-copy {
+  font: 20px/1.25 var(--terminal);
+  margin: 10px 0;
+  color: #c2b7bc;
+}
+.world-nasa-button {
+  position: absolute;
+  bottom: 18px;
+  left: 30px;
+  z-index: 5;
+  min-height: 36px;
+  padding: 8px 10px;
+  border: 1px solid #4d6266;
+  background: #151a25e8;
+  color: #a6d7d7;
+  font: 16px var(--terminal);
+  box-shadow: 2px 2px #0b0d15;
+}
+.mission-pointer {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: calc(50% - 10px);
+  width: 20px;
+  height: 22px;
+  filter: drop-shadow(0 0 6px #ffd32e88);
+  animation: goal-bob 0.9s steps(2, end) infinite;
+  pointer-events: none;
+}
+.mission-pointer svg {
+  width: 20px;
+  height: 22px;
+}
+.mission-active {
+  border-color: #ffce39 !important;
+  box-shadow:
+    0 0 0 2px #ffce3933,
+    3px 3px #17121b !important;
+}
+.mission-active .mission-mark {
+  background: #ffce39;
+  color: #272018;
+}
+.easy-game .world-toast {
+  max-width: min(460px, calc(100% - 32px));
+  font-size: 18px;
+  line-height: 1.25;
+}
+.easy-game .world-complete-banner {
+  font-size: 8px;
+  max-width: calc(100% - 36px);
+}
+.easy-mission {
+  font: 20px/1.25 var(--terminal);
+  color: #d7cbbf;
+  max-width: 680px;
+  margin: 0 auto;
+}
+.easy-mission h3 {
+  font: 11px/1.7 var(--pixel);
+  color: #eeddbf;
+  margin: 17px 0 10px;
+}
+.mission-instruction {
+  margin: 0 0 15px;
+  padding: 11px 13px;
+  border: 1px solid #756336;
+  background: #30281e;
+  color: #ffe29a;
+  font: 21px/1.2 var(--terminal);
+}
+.easy-slider {
+  display: block;
+  margin: 23px 0;
+}
+.easy-slider > span:first-child {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: #ddd0c4;
+  font: 21px var(--terminal);
+  margin-bottom: 12px;
+}
+.easy-slider strong {
+  font-weight: 400;
+  color: #f3d18a;
+}
+.easy-slider small {
+  display: block;
+  font: 16px/1.2 var(--terminal);
+  color: #a89caa;
+  margin-top: 8px;
+}
+.easy-slider input[type="range"] {
+  width: 100%;
+  height: 34px;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  margin: 0;
+  position: relative;
+  z-index: 2;
+  touch-action: pan-y;
+}
+.easy-slider input[type="range"]::-webkit-slider-runnable-track {
+  height: 12px;
+  background: #54506170;
+  border: 1px solid #847281;
+  box-shadow: 0 2px #090d15;
+}
+.easy-slider input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 28px;
+  background: #f2ddad;
+  border: 3px solid #a2724c;
+  border-radius: 0;
+  margin-top: -9px;
+  box-shadow: 2px 2px #11121b;
+}
+.easy-slider input[type="range"]::-moz-range-track {
+  height: 12px;
+  background: #54506170;
+  border: 1px solid #847281;
+}
+.easy-slider input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 24px;
+  background: #f2ddad;
+  border: 3px solid #a2724c;
+  border-radius: 0;
+}
+.safe-track {
+  position: relative;
+  height: 34px;
+  isolation: isolate;
+}
+.safe-band {
+  position: absolute;
+  height: 28px;
+  top: 3px;
+  background: #39ff1470;
+  border: 2px solid #73e356;
+  box-shadow: 0 0 10px #39ff1425;
+  z-index: 1;
+}
+.safe-zone-label {
+  display: block;
+  font: 17px/1.2 var(--terminal);
+  color: #b8ce9d;
+  margin-top: 8px;
+}
+.safe-zone-label.in-zone {
+  color: #a8ec88;
+}
+.easy-readouts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 20px 0;
+}
+.easy-readouts > div {
+  padding: 13px 10px;
+  background: #1d1926;
+  border: 1px solid #51414f;
+  box-shadow: 2px 2px #0d0e16;
+}
+.easy-readouts span {
+  display: block;
+  font: 7px/1.6 var(--pixel);
+  color: #ab9caf;
+}
+.easy-readouts strong {
+  display: block;
+  color: #e7d9b9;
+  font: 28px var(--terminal);
+  margin-top: 8px;
+}
+.easy-readouts strong small {
+  font-size: 17px;
+  margin-left: 3px;
+}
+.easy-progress {
+  margin: 19px 0;
+}
+.easy-progress > span {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.easy-progress b {
+  color: #add68c;
+  font-weight: 400;
+}
+.easy-progress progress {
+  display: block;
+  appearance: none;
+  width: 100%;
+  height: 14px;
+  background: #252332;
+  border: 1px solid #637456;
+  margin-top: 9px;
+  padding: 2px;
+}
+.easy-progress progress::-webkit-progress-bar {
+  background: #252332;
+}
+.easy-progress progress::-webkit-progress-value {
+  background: repeating-linear-gradient(
+    90deg,
+    #a7d485 0 10px,
+    #253026 10px 13px
+  );
+}
+.easy-progress progress::-moz-progress-bar {
+  background: #a7d485;
+}
+.easy-progress small {
+  font-size: 16px;
+  color: #a2989f;
+  display: block;
+  margin-top: 8px;
+}
+.easy-status {
+  padding: 12px 13px;
+  background: #231f29;
+  border-left: 3px solid #cc9b58;
+  font: 20px/1.2 var(--terminal);
+  min-height: 48px;
+  color: #e2ccad;
+}
+.easy-status.is-safe,
+.signal-friendly.is-safe {
+  border-color: #8ccf70;
+  background: #1c2a22;
+  color: #b8eba3;
+}
+.easy-status.is-danger {
+  border-color: #ec6a4a;
+  background: #372027;
+  color: #ffb699;
+}
+.easy-time {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font: 16px var(--terminal);
+  color: #a99baa;
+  margin: 15px 0;
+}
+.easy-time progress {
+  flex: 1;
+  height: 8px;
+  accent-color: #c38952;
+}
+.easy-primary {
+  width: 100%;
+  min-height: 52px;
+  font: 10px/1.8 var(--pixel) !important;
+  padding: 14px 12px !important;
+  box-shadow: 3px 3px #462a26;
+}
+.easy-tip {
+  font-size: 17px;
+  color: #a79ca8;
+  line-height: 1.2;
+}
+.easy-round {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.easy-round > span {
+  font: 16px var(--terminal);
+  color: #d4ae75;
+}
+.easy-system-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px;
+  margin-top: 19px;
+}
+.easy-system {
+  min-height: 170px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 16px;
+  text-align: left;
+  border: 2px solid #574752;
+  background: #211b29;
+  box-shadow: 3px 3px #0a0c13;
+  color: #c0b0bb;
+}
+.easy-system.switched-on {
+  border-color: #99bf70;
+  background: #223023;
+  color: #d9e8bb;
+}
+.easy-system:hover:not(:disabled) {
+  filter: brightness(1.15);
+}
+.easy-system-icon {
+  font-size: 29px;
+  line-height: 1;
+  margin-bottom: 11px;
+}
+.easy-system > strong {
+  font: 10px/1.6 var(--pixel);
+  color: #e8d8bf;
+}
+.easy-system > small {
+  display: block;
+  font: 18px/1.1 var(--terminal);
+  margin-top: 9px;
+  min-height: 39px;
+}
+.binary-state {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 12px;
+  font: 8px var(--pixel);
+  color: #9b8a9b;
+}
+.binary-state i {
+  display: inline-block;
+  width: 33px;
+  height: 18px;
+  border: 1px solid #8d7482;
+  background: #17141f;
+  position: relative;
+}
+.binary-state i:after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 10px;
+  height: 10px;
+  background: #967885;
+}
+.switched-on .binary-state {
+  color: #c5e79d;
+}
+.switched-on .binary-state i {
+  border-color: #a8c884;
+  background: #35442d;
+}
+.switched-on .binary-state i:after {
+  left: 18px;
+  background: #c3e69b;
+}
+.switch-count {
+  font: 17px var(--terminal);
+  color: #b1d39a;
+  text-align: right;
+  margin: 11px 0;
+}
+.easy-notice {
+  padding: 10px;
+  color: #ffd189;
+  background: #3b2a22;
+  border: 1px solid #a8793a;
+}
+.easy-signal .oscilloscope {
+  width: 100%;
+  height: 168px;
+  object-fit: fill;
+  border: 2px solid #315b3b;
+  image-rendering: pixelated;
+}
+.easy-signal-legend {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 16px;
+  color: #9bca81;
+  margin-top: 8px;
+}
+.easy-signal-legend span + span {
+  color: #8cdddf;
+}
+.signal-friendly {
+  padding: 12px;
+  border-left: 3px solid #6b9da8;
+  background: #1d2630;
+  color: #b5dadd;
+  margin-top: 17px;
+  min-height: 47px;
+  font: 20px/1.2 var(--terminal);
+}
+.signal-friendly.almost-ready {
+  border-color: #ffd95c;
+  background: #302a21;
+  color: #ffe494;
+}
+.easy-signal .easy-slider {
+  margin: 18px 0;
+}
+.nasa-fact {
+  margin-top: 15px;
+  border-top: 1px solid #413545;
+  padding-top: 12px;
+}
+.nasa-fact-button {
+  font: 17px/1.2 var(--terminal);
+  color: #9ececc;
+  background: #171d27;
+  border: 1px solid #476069;
+  min-height: 36px;
+  padding: 7px 10px;
+  box-shadow: 2px 2px #0b0c16;
+}
+.nasa-fact-content {
+  border-left: 2px solid #476069;
+  padding: 3px 0 0 14px;
+  margin-top: 16px;
+}
+.nasa-fact-content[hidden] {
+  display: none !important;
+}
+.nasa-fact-content p {
+  font-size: 19px;
+  line-height: 1.15;
+  margin: 13px 0;
+  color: #b9acb9;
+}
+.nasa-fact-content a {
+  display: block;
+  color: #85d0d1;
+  font: 16px/1.2 var(--terminal);
+  margin: 13px 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.easy-help p,
+.world-history .short-copy {
+  font-size: 20px;
+  line-height: 1.25;
+}
+.easy-emergency {
+  padding: 26px !important;
+  text-align: center;
+}
+.easy-emergency .solar-emergency-heading {
+  justify-content: center;
+}
+.easy-emergency .solar-emergency-heading > div {
+  font-size: 16px;
+  line-height: 1.7;
+}
+.easy-emergency .solar-emergency-heading small {
+  font: 18px var(--terminal);
+  margin-top: 10px;
+}
+.easy-countdown {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  margin: 27px 0;
+  color: #ffbd94;
+}
+.easy-countdown strong {
+  font: 64px var(--pixel);
+  line-height: 1.1;
+  text-shadow: 4px 4px #52272a;
+}
+.easy-countdown span {
+  font: 9px var(--pixel);
+}
+.easy-emergency .world-shield-button {
+  display: block;
+  width: 100%;
+  font-size: 18px;
+  line-height: 1.7;
+  min-height: 110px;
+  animation: shield-ready 1.2s steps(2, end) infinite;
+  margin: 22px 0 15px;
+}
+.easy-emergency > p {
+  font-size: 21px !important;
+  line-height: 1.2 !important;
+}
+.easy-route-planner .easy-route-symbol {
+  float: right;
+  font: 28px var(--pixel);
+  line-height: 1;
+}
+.easy-route-planner .route-option h3 {
+  font-size: 10px;
+  line-height: 1.7;
+}
+.easy-route-planner .route-option p {
+  font-size: 20px;
+  line-height: 1.2;
+  min-height: 72px;
+}
+.easy-route-planner .route-option em {
+  font-size: 7px;
+}
+.easy-route-planner .route-option > strong {
+  margin-top: 15px;
+}
+.rover-heat-toggle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  min-height: 64px;
+  border: 2px solid #65515b;
+  background: #291e2b;
+  color: #c4adb8;
+  font: 18px/1.2 var(--terminal);
+  padding: 13px 10px;
+  box-shadow: 3px 3px #090c14;
+}
+.rover-heat-toggle.switched-on {
+  border-color: #bf8850;
+  background: #443022;
+  color: #ffe1a0;
+}
+.rover-heat-toggle > span {
+  font-size: 24px;
+}
+.rover-heat-toggle > i {
+  margin-left: auto;
+  display: block;
+  min-width: 14px;
+  height: 14px;
+  background: #82617b;
+  box-shadow: 0 0 0 3px #15131c;
+}
+.rover-heat-toggle.switched-on > i {
+  background: #c4e59d;
+}
+.easy-rover-console .easy-tip {
+  font-size: 18px;
+  line-height: 1.15;
+}
+.easy-rover-console .rover-console-heading {
+  font-size: 16px;
+}
+.easy-rover-console .rover-console-heading > b {
+  font-size: 11px;
+}
+.easy-rover-console .easy-primary {
+  font-size: 9px !important;
+}
+.easy-rover-console .rover-forecast {
+  border-top: 1px solid #41313b;
+  margin-top: 15px;
+}
+.easy-game .jezero-legend {
+  bottom: 80px;
+}
+.easy-game .jezero-world .world-heading h1 {
+  font-size: 17px;
+}
+.easy-game .jezero-map-id strong {
+  font-size: 15px;
+}
+.easy-game .world-tactical .tactical-body {
+  padding: 22px;
+}
+.easy-game .tactical-header h2 {
+  font-size: 12px;
+}
+@keyframes goal-bob {
+  0%,
+  100% {
+    transform: translateY(-2px);
+  }
+  50% {
+    transform: translateY(5px);
+  }
+}
+@keyframes shield-ready {
+  0%,
+  100% {
+    background: #e46e48;
+    box-shadow:
+      0 0 0 3px #ffbc75,
+      5px 5px #6b2a27;
+  }
+  50% {
+    background: #f09b53;
+    box-shadow:
+      0 0 0 3px #ffe39b,
+      5px 5px #6b2a27;
+  }
+}
+@media (max-width: 1000px) {
+  .mission-goal {
+    padding: 8px 20px;
+    font-size: 19px;
+  }
+  .easy-game .world-heading h1 {
+    font-size: 13px;
+  }
+  .easy-game .world-heading p {
+    max-width: 260px;
+  }
+  .easy-game .world-coordinate-card {
+    min-width: 120px;
+  }
+  .prologue-steps {
+    padding: 9px 20px;
+  }
+  .easy-game .origin-overlay {
+    max-height: calc(100% - 24px);
+  }
+  .easy-game .origin-overlay-header h2 {
+    font-size: 17px;
+  }
+  .easy-game .origin-choice {
+    min-height: 76px;
+  }
+  .easy-game .origin-bonus {
+    font-size: 16px;
+  }
+}
+@media (max-width: 760px) {
+  .easy-game {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+  .easy-game .iso-topbar {
+    position: relative;
+  }
+  .mission-goal {
+    position: sticky;
+    top: 0;
+    padding: 10px 14px;
+    gap: 9px;
+    z-index: 20;
+    font-size: 19px;
+    min-height: 62px;
+  }
+  .mission-goal p {
+    line-height: 1.1;
+  }
+  .mission-goal button {
+    padding: 8px;
+    font-size: 6px;
+    min-height: 40px;
+  }
+  .prologue-steps {
+    gap: 5px;
+    padding: 8px 12px;
+  }
+  .prologue-steps button {
+    font-size: 5.5px;
+    padding: 7px 4px;
+    min-height: 52px;
+    line-height: 1.7;
+  }
+  .easy-game .iso-world {
+    min-height: 565px;
+  }
+  .easy-game .world-heading {
+    top: 22px;
+    left: 16px;
+  }
+  .easy-game .world-heading h1 {
+    font-size: 10px;
+    line-height: 1.7;
+    max-width: 220px;
+  }
+  .easy-game .world-heading p {
+    font-size: 16px;
+    max-width: 205px;
+    line-height: 1.15;
+  }
+  .easy-game .world-coordinate-card {
+    top: 20px;
+    right: 16px;
+    min-width: 105px;
+    padding: 10px;
+    max-width: 140px;
+  }
+  .easy-game .world-coordinate-card > strong {
+    font-size: 17px;
+  }
+  .easy-game .easy-location > span:first-child {
+    font-size: 8px;
+  }
+  .easy-game .coordinate-link {
+    font-size: 9px !important;
+  }
+  .easy-game .origin-overlay {
+    top: 50%;
+    width: calc(100% - 28px);
+    left: 14px;
+    right: auto;
+    transform: translateY(-43%);
+    max-height: calc(100% - 30px);
+    padding: 20px;
+  }
+  .easy-game .origin-overlay-header {
+    padding-bottom: 14px;
+  }
+  .easy-game .origin-overlay-header h2 {
+    font-size: 17px;
+    line-height: 1.6;
+    margin: 9px 0;
+  }
+  .easy-game .origin-overlay-header p {
+    font-size: 18px;
+  }
+  .easy-game .origin-choice {
+    padding: 12px;
+    min-height: 78px;
+    gap: 10px;
+  }
+  .easy-game .origin-symbol {
+    width: 26px;
+    min-width: 26px;
+    font-size: 23px;
+  }
+  .easy-game .origin-choice strong {
+    font-size: 10px;
+    line-height: 1.6;
+  }
+  .easy-game .origin-bonus {
+    font-size: 14px;
+    white-space: normal;
+    line-height: 1.2;
+    margin-top: 6px;
+  }
+  .easy-game .origin-overlay-footer {
+    font-size: 10px;
+    line-height: 1.3;
+  }
+  .world-nasa-button {
+    left: 16px;
+    bottom: 16px;
+    font-size: 16px;
+  }
+  .easy-game .world-dialogue {
+    min-height: 152px;
+    padding: 17px 15px;
+    gap: 11px;
+    margin: 0 12px 10px;
+  }
+  .easy-game .dialogue-copy p {
+    font-size: 18px;
+    line-height: 1.25;
+    min-height: 46px;
+    max-height: 46px;
+  }
+  .easy-game .dialogue-meta {
+    font-size: 8px;
+  }
+  .easy-game .dialogue-meta > button {
+    font-size: 10px;
+  }
+  .easy-game .dialogue-action {
+    min-height: 44px;
+    font-size: 8px;
+  }
+  .easy-game .dialogue-portrait {
+    width: 38px;
+    flex-shrink: 0;
+  }
+  .easy-game .dialogue-portrait svg {
+    width: 35px;
+    height: 35px;
+  }
+  .easy-game .iso-controls {
+    font-size: 9px;
+    line-height: 1.3;
+    padding: 10px 14px;
+    min-height: 40px;
+    height: auto;
+  }
+  .easy-game .iso-controls > span + span {
+    display: none;
+  }
+  .easy-game .world-tools {
+    right: 16px;
+    bottom: 16px;
+  }
+  .easy-game .world-toast {
+    top: auto;
+    bottom: 65px;
+    font-size: 18px;
+  }
+  .easy-game .world-tactical {
+    max-height: calc(100dvh - 20px);
+    width: calc(100% - 20px);
+    margin: auto;
+  }
+  .easy-game .world-tactical .tactical-body {
+    padding: 16px;
+  }
+  .easy-game .tactical-header h2 {
+    font-size: 9px;
+  }
+  .easy-game .tactical-header > div > span {
+    font-size: 13px;
+  }
+  .easy-mission h3 {
+    font-size: 10px;
+  }
+  .mission-instruction {
+    font-size: 19px;
+    padding: 10px 11px;
+  }
+  .short-copy {
+    font-size: 18px;
+    line-height: 1.2;
+  }
+  .easy-slider > span:first-child {
+    font-size: 20px;
+  }
+  .easy-readouts {
+    gap: 7px;
+    margin: 16px 0;
+  }
+  .easy-readouts > div {
+    padding: 12px 7px;
+  }
+  .easy-readouts span {
+    font-size: 5.5px;
+    line-height: 1.6;
+  }
+  .easy-readouts strong {
+    font-size: 25px;
+  }
+  .easy-system-grid {
+    gap: 9px;
+  }
+  .easy-system {
+    padding: 13px 10px;
+    min-height: 171px;
+  }
+  .easy-system > strong {
+    font-size: 8px;
+    line-height: 1.8;
+  }
+  .easy-system > small {
+    font-size: 17px;
+    min-height: 40px;
+  }
+  .binary-state {
+    font-size: 6px;
+    gap: 7px;
+  }
+  .easy-round > span {
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .easy-primary {
+    font-size: 8px !important;
+    min-height: 52px;
+  }
+  .easy-status {
+    font-size: 19px;
+  }
+  .easy-signal .oscilloscope {
+    height: 140px;
+  }
+  .easy-signal-legend {
+    font-size: 13px;
+    gap: 8px;
+  }
+  .signal-friendly {
+    font-size: 19px;
+  }
+  .nasa-fact-content p {
+    font-size: 18px;
+  }
+  .easy-emergency {
+    width: calc(100% - 24px) !important;
+    padding: 22px 17px !important;
+    max-height: calc(100dvh - 24px);
+    overflow-y: auto;
+  }
+  .easy-emergency .solar-emergency-heading > div {
+    font-size: 11px;
+    line-height: 1.7;
+  }
+  .easy-emergency .solar-emergency-heading small {
+    font-size: 17px;
+  }
+  .easy-countdown {
+    margin: 24px 0;
+  }
+  .easy-countdown strong {
+    font-size: 52px;
+  }
+  .easy-emergency .world-shield-button {
+    font-size: 13px;
+    min-height: 95px;
+    padding: 16px 12px;
+    line-height: 1.8;
+  }
+  .easy-emergency > p {
+    font-size: 19px !important;
+  }
+  .easy-game .jezero-world {
+    min-height: 850px;
+  }
+  .easy-game .jezero-legend {
+    bottom: auto;
+    top: 435px;
+    font-size: 12px;
+  }
+  .easy-game .jezero-world .world-heading h1 {
+    font-size: 12px;
+  }
+  .easy-game .jezero-map-id {
+    max-width: 135px;
+  }
+  .easy-game .jezero-map-id strong {
+    font-size: 12px;
+  }
+  .easy-route-planner {
+    top: 270px;
+  }
+  .easy-route-planner .route-option p {
+    font-size: 17px;
+    min-height: 88px;
+    line-height: 1.2;
+  }
+  .easy-route-planner .route-option h3 {
+    font-size: 8px;
+  }
+  .easy-route-planner .route-option em {
+    font-size: 5px;
+  }
+  .easy-route-planner .easy-route-symbol {
+    font-size: 20px;
+  }
+  .easy-rover-console {
+    bottom: 65px;
+  }
+  .rover-heat-toggle {
+    font-size: 21px;
+    min-height: 65px;
+  }
+  .easy-game .jezero-extraction-label {
+    top: 215px;
+  }
+  .easy-help p,
+  .world-history .short-copy {
+    font-size: 18px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mission-pointer,
+  .easy-emergency .world-shield-button {
+    animation: none;
+  }
+  .mission-active {
+    box-shadow: 0 0 0 2px #ffce3966 !important;
+  }
+}
+/* Show all three origins without scrolling at common laptop heights. */
+.easy-game .iso-world:has(.origin-overlay) > .world-heading,
+.easy-game .iso-world:has(.origin-overlay) > .world-coordinate-card {
+  visibility: hidden;
+}
+@media (min-width: 761px) {
+  .easy-game .origin-overlay {
+    width: min(960px, calc(100% - 64px));
+    left: 50%;
+    top: 50%;
+    right: auto;
+    transform: translate(-50%, -50%);
+    padding: 20px 22px;
+    max-height: calc(100% - 22px);
+  }
+  .easy-game .origin-overlay-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding-bottom: 16px;
+  }
+  .easy-game .origin-overlay-header > .eyebrow {
+    display: none;
+  }
+  .easy-game .origin-overlay-header h2 {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .easy-game .origin-overlay-header p {
+    max-width: 280px;
+    margin: 0;
+    font-size: 19px;
+  }
+  .easy-game .origin-choices {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .easy-game .origin-choice {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 9px;
+    min-height: 139px;
+    padding: 15px 14px;
+    position: relative;
+  }
+  .easy-game .origin-choice > .origin-symbol {
+    width: 28px;
+    min-width: 28px;
+    height: 27px;
+    font-size: 27px;
+    line-height: 1;
+  }
+  .easy-game .origin-choice > span:nth-child(2) {
+    width: 100%;
+  }
+  .easy-game .origin-choice > span strong {
+    font-size: 9px;
+    line-height: 1.7;
+    display: block;
+  }
+  .easy-game .origin-bonus {
+    font-size: 15px;
+    white-space: nowrap;
+    margin-top: 6px;
+  }
+  .easy-game .origin-choice > b {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+  }
+  .easy-game .origin-overlay-footer {
+    margin-top: 13px;
+    font-size: 11px;
+    line-height: 1.2;
+  }
+}
+@media (min-width: 761px) and (max-width: 1000px) {
+  .easy-game .origin-bonus {
+    font-size: 13px;
+  }
+  .easy-game .origin-choice > span strong {
+    font-size: 7px;
+  }
+  .easy-game .origin-overlay {
+    padding: 17px;
+  }
+}
+@media (max-width: 760px) {
+  .easy-game .origin-bonus {
+    white-space: nowrap;
+    font-size: 14px;
+  }
+  .easy-game .origin-overlay-header p {
+    margin: 0;
+  }
+  .easy-game .origin-overlay-footer {
+    margin-top: 15px;
+  }
+}
+/* Keep the main action visible while reading or moving the sliders. */
+.easy-game .world-tactical {
+  inset: 20px 22px 20px auto;
+  max-height: calc(100dvh - 40px);
+  width: 570px;
+  margin: 0;
+}
+.easy-game .tactical-footer-action {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 14px 20px 10px;
+  gap: 10px;
+  background: #1c1723;
+  flex-shrink: 0;
+  border-top: 1px solid #6a4c43;
+}
+.easy-game .tactical-footer-action .easy-primary {
+  margin: 0 !important;
+  flex-shrink: 0;
+}
+.easy-game .tactical-footer-hint {
+  font: 11px var(--terminal);
+  letter-spacing: 1px;
+  color: #a79aab;
+}
+.easy-game .tactical-body {
+  min-height: 0;
+  overscroll-behavior: contain;
+}
+@media (max-width: 760px) {
+  .easy-game .world-tactical {
+    inset: 10px;
+    max-height: calc(100dvh - 20px);
+    width: calc(100% - 20px);
+    margin: auto;
+  }
+  .easy-game .tactical-footer-action {
+    padding: 12px 15px 10px;
+  }
+  .easy-game .tactical-footer-hint {
+    font-size: 10px;
+  }
+}
+.easy-game .origin-overlay {
+  bottom: auto;
+  height: auto;
+  margin: 0;
+}
+.easy-game .origin-overlay-header {
+  padding: 0 0 16px;
+  flex-shrink: 0;
+}
+.easy-game .origin-choices {
+  padding: 0;
+  flex-shrink: 0;
+}
+.easy-game .origin-overlay-footer {
+  padding: 12px 0 0;
+  flex-shrink: 0;
+}
+@media (max-width: 760px) {
+  .easy-game .origin-overlay {
+    transform: translateY(-50%);
+  }
+  .easy-game .rover-hud {
+    top: 62px;
+  }
+}
+/* Keep the antenna wave and feedback visible while adjusting each control. */
+.easy-game .tactical-preview {
+  padding: 12px 20px;
+  flex-shrink: 0;
+  background: #11191c;
+  border-bottom: 1px solid #355846;
+}
+.easy-game .signal-preview .oscilloscope {
+  position: static;
+  inset: auto;
+  display: block;
+  width: 100%;
+  height: 110px;
+  border: 1px solid #315b3b;
+  margin: 0;
+  image-rendering: pixelated;
+}
+.easy-game .signal-preview .signal-friendly {
+  margin-top: 9px;
+  padding: 8px 10px;
+  min-height: 36px;
+  font-size: 18px;
+}
+.easy-game .easy-storm .easy-system {
+  min-height: 142px;
+  padding: 12px;
+}
+.easy-game .easy-storm .easy-system-icon {
+  font-size: 23px;
+  margin-bottom: 7px;
+}
+.easy-game .easy-storm .easy-system > small {
+  font-size: 17px;
+  min-height: 34px;
+  margin-top: 6px;
+}
+.easy-game .easy-storm .binary-state {
+  padding-top: 8px;
+}
+.easy-game .easy-storm .easy-system-grid {
+  margin-top: 12px;
+  gap: 10px;
+}
+.easy-game .easy-storm .easy-round h3 {
+  margin: 8px 0;
+  font-size: 10px;
+}
+.easy-game .easy-storm > .short-copy {
+  font-size: 18px;
+  margin: 7px 0;
+}
+@media (max-height: 760px) {
+  .easy-game .signal-preview .oscilloscope {
+    height: 82px;
+  }
+}
+@media (max-width: 760px) {
+  .easy-game .tactical-preview {
+    padding: 10px 15px;
+  }
+  .easy-game .signal-preview .oscilloscope {
+    height: 100px;
+  }
+  .easy-game .signal-preview .signal-friendly {
+    font-size: 18px;
+  }
+  .easy-game .easy-storm .easy-system {
+    min-height: 148px;
+  }
+}
+/* Let short laptop screens scroll to the rover dialogue. */
+.easy-game.jezero-game {
+  height: auto;
+  min-height: 100dvh;
+  overflow: visible;
+}
+.easy-game.jezero-game .mission-goal {
+  position: sticky;
+  top: 0;
+}

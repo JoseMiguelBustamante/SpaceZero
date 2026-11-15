@@ -1,0 +1,1467 @@
+/* Chispa's floating toy world. Procedural pixels, larger controls and calm learning. */
+.kids-game {
+  background: #201b35;
+  color: #fff2dc;
+  min-height: 760px;
+}
+.kids-game .iso-topbar {
+  background: #211c36;
+  border-bottom: 3px solid #71619c;
+  min-height: 62px;
+  height: 62px;
+}
+.kids-game .iso-brand > span {
+  color: #ffd86a;
+  border: 2px solid #a995ce;
+  background: #383052;
+}
+.kids-game .iso-brand small b {
+  color: #ffa488;
+}
+.kids-game .iso-header-status {
+  color: #d5c5ef;
+}
+.kids-game .iso-world {
+  background:
+    radial-gradient(ellipse at 50% 55%, #ba9add40, transparent 65%),
+    linear-gradient(#2b254b, #524676);
+}
+.kids-game .iso-world:after {
+  background: linear-gradient(transparent, #52467666);
+  height: 22px;
+}
+.kids-game .world-heading {
+  z-index: 3;
+  pointer-events: none;
+  top: 20px;
+}
+.kids-game .world-heading .eyebrow {
+  color: #e2caff;
+}
+.kids-game .world-heading h1 {
+  color: #fff4c5;
+  text-shadow: 3px 3px #403056;
+  font-size: 13px;
+}
+.kids-game .world-heading p {
+  color: #f4e8ff;
+  max-width: 260px;
+  font-size: 18px;
+}
+.kids-game .world-coordinate-card {
+  background: #211c36df;
+  border: 2px solid #9b82b3;
+  color: #fae5ff;
+}
+.kids-game .mission-goal {
+  background: #4b3652;
+  border-bottom: 2px solid #dbb86e;
+  color: #fff0b0;
+  min-height: 44px;
+  padding: 7px 24px;
+  font-size: 21px;
+}
+.kids-game .mission-goal button {
+  background: #ffe28a;
+  color: #332644;
+  border: 2px solid #fff3c3;
+  min-height: 38px;
+  box-shadow: 3px 3px #211c36;
+}
+.kids-game .world-hud {
+  background: #211c36;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #695883;
+}
+.kids-game .world-resource {
+  border-color: #51455e;
+}
+.kids-game .world-resource strong {
+  color: #fff7e5;
+}
+.kids-game .world-resource-label {
+  color: #c9bbdb;
+}
+.kids-game .resource-glyph {
+  font-family: var(--terminal);
+  font-size: 22px;
+}
+.kids-game .building-label {
+  font: 7px/1.7 var(--pixel);
+  color: #fff5da;
+  background: #3a2e57;
+  border: 2px solid #ae90cb;
+  min-height: 36px;
+  box-shadow: 3px 3px #271d3b;
+  gap: 4px;
+  padding: 7px;
+}
+.kids-game .building-label.mission-active {
+  background: #356a56;
+  color: #fff9ca;
+  border-color: #ffee7d;
+  box-shadow:
+    0 0 0 2px #ffe58240,
+    3px 3px #231e39;
+}
+.kids-game .building-label:hover {
+  background: #634581;
+  border-color: #ffd86a;
+  transform: translate(-50%, -100%) scale(1.05);
+}
+.kids-game .building-index {
+  color: #e3cff9;
+}
+.kids-game .building-label.future-building {
+  opacity: 1;
+}
+.kids-game .mission-pointer {
+  filter: drop-shadow(0 0 5px #ffdf37);
+}
+.kids-game .player-marker {
+  color: #fff4b7;
+  font-size: 10px;
+  background: #39294b;
+  border: 1px solid #bba1cd;
+}
+.kids-game .prologue-steps {
+  background: #2b2340;
+  padding: 7px 24px;
+  gap: 10px;
+}
+.kids-game .prologue-steps button {
+  background: #3e325b;
+  border: 2px solid #9178a8;
+  color: #fcefff;
+  min-height: 40px;
+}
+.kids-game .prologue-steps button[aria-current="step"] {
+  background: #6e5185;
+  border-color: #ffdc84;
+  color: #fff0b0;
+}
+.kids-game .prologue-steps button:disabled {
+  opacity: 0.45;
+}
+.kids-game .origin-overlay {
+  inset: 16px 22px auto;
+  transform: none;
+  max-height: calc(100% - 32px);
+  width: min(890px, calc(100% - 44px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(250px, 0.9fr) minmax(280px, 1.1fr);
+  grid-template-rows: auto 1fr auto;
+  gap: 4px 28px;
+  padding: 22px 28px;
+  border: 3px solid #bb9eda;
+  background: #211c36f7;
+  box-shadow: 7px 7px #171329b0;
+  overflow: auto;
+}
+.kids-game .origin-overlay-header {
+  grid-column: 2;
+  grid-row: 1;
+  padding: 0 0 12px;
+}
+.kids-game .origin-overlay-header .eyebrow {
+  color: #f8d77b;
+}
+.kids-game .origin-overlay-header h2 {
+  font-size: 18px;
+  line-height: 1.5;
+  letter-spacing: 0;
+  margin: 10px 0;
+}
+.kids-game .origin-overlay-header h2 br {
+  display: none;
+}
+.kids-game .origin-overlay-header h2 em {
+  margin-left: 12px;
+  color: #bba0ff;
+}
+.kids-game .origin-overlay-header p {
+  color: #eee0ff;
+  font-size: 19px;
+}
+.kids-game .origin-choices {
+  grid-column: 2;
+  grid-row: 2;
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.kids-game .origin-choice {
+  background: #3a2d52;
+  border: 2px solid #826ca0;
+  min-height: 70px;
+  padding: 12px;
+  box-shadow: 3px 3px #17152a;
+}
+.kids-game .origin-choice:hover {
+  background: #51416b;
+  border-color: #ffdd87;
+}
+.kids-game .origin-choice strong {
+  font-size: 9px;
+  line-height: 1.7;
+  color: #fff2d4;
+}
+.kids-game .origin-symbol {
+  color: #93e6bb;
+  font-size: 26px;
+  min-width: 30px;
+  width: 30px;
+}
+.kids-game .origin-bonus {
+  font-size: 18px;
+  color: #d9ebbf;
+  white-space: normal;
+  line-height: 1.15;
+  margin-top: 5px;
+}
+.kids-game .origin-overlay-footer {
+  grid-column: 1/-1;
+  grid-row: 3;
+  padding-top: 14px;
+  font-size: 13px;
+  color: #d5c8e7;
+}
+.bolivia-map {
+  position: relative;
+  grid-column: 1;
+  grid-row: 1/3;
+  align-self: center;
+  width: 100%;
+  max-width: 340px;
+  aspect-ratio: 300/310;
+  justify-self: center;
+  background: radial-gradient(ellipse, #56417766, transparent 65%);
+}
+.bolivia-map > svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(7px 9px #100e2c80);
+}
+.map-pin {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  z-index: 2;
+  white-space: nowrap;
+  background: #24203be8;
+  border: 2px solid #fff0ba;
+  color: #fff7cd;
+  padding: 4px 7px 4px 4px;
+  min-height: 44px;
+  box-shadow: 3px 3px #1c153b;
+  font: 19px/1 var(--terminal);
+}
+.map-pin i {
+  font-style: normal;
+  color: #ffe878;
+  font-size: 26px;
+  animation: pin-glow 1.4s steps(3) infinite;
+}
+.pin-santa-cruz {
+  transform: translate(-10%, -75%);
+}
+.pin-la-paz {
+  transform: translate(-70%, -105%);
+}
+.pin-uyuni {
+  transform: translate(-60%, 10%);
+}
+.map-pin:hover {
+  background: #5e447e;
+  z-index: 4;
+  border-color: #ffe06f;
+}
+.bolivia-map > small {
+  position: absolute;
+  bottom: -7px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font: 12px var(--terminal);
+  color: #cbb6e2;
+}
+.origin-science {
+  position: absolute;
+  left: 22px;
+  bottom: 52px;
+  max-width: 320px;
+  z-index: 4;
+  pointer-events: none;
+}
+.science-play-card {
+  display: flex;
+  gap: 13px;
+  align-items: center;
+  padding: 13px 15px;
+  background: #302844;
+  border: 2px solid #7b7299;
+  box-shadow: 3px 3px #161327;
+  margin-bottom: 18px;
+}
+.science-pictures {
+  font: 24px/1.7 var(--terminal);
+  flex: 0 0 104px;
+  text-align: center;
+  max-width: 130px;
+}
+.science-play-card strong {
+  color: #ffe389;
+  font: 19px/1.1 var(--terminal);
+}
+.science-play-card p {
+  color: #e2d6ef;
+  font: 19px/1.15 var(--terminal);
+  margin: 6px 0 0;
+}
+.origin-science .science-play-card {
+  display: block;
+  background: #302844e8;
+  margin: 0;
+}
+.origin-science .science-pictures {
+  max-width: none;
+  line-height: 1.1;
+  text-align: left;
+  margin-bottom: 6px;
+}
+.medal-album {
+  position: relative;
+  background: #2a233e;
+  border-bottom: 1px solid #5e4e7c;
+  z-index: 14;
+  flex-shrink: 0;
+}
+.album-toggle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  min-height: 42px;
+  padding: 4px 20px;
+  color: #dfc9f5;
+  font: 8px var(--pixel);
+  background: transparent;
+}
+.album-toggle b {
+  color: #ffe187;
+  margin-left: 7px;
+  font-size: 9px;
+}
+.medal-icons {
+  display: flex;
+  gap: 10px;
+}
+.medal-icons svg {
+  height: 32px;
+  width: 27px;
+}
+.album-content {
+  position: absolute;
+  right: 20px;
+  top: 100%;
+  background: #241e38;
+  border: 3px solid #b597cf;
+  box-shadow: 5px 5px #181326;
+  min-width: 260px;
+  padding: 18px;
+  z-index: 30;
+  color: #fff0c8;
+}
+.album-content > strong {
+  font: 19px var(--terminal);
+}
+.album-content > div {
+  display: flex;
+  gap: 13px;
+  align-items: center;
+  margin-top: 13px;
+  font: 19px var(--terminal);
+}
+.album-content svg {
+  width: 34px;
+  height: 40px;
+}
+.album-content small {
+  display: block;
+  color: #bcafd0;
+  font-size: 16px;
+}
+.kids-game .world-dialogue {
+  background: #211c36;
+  border-top: 3px solid #9d80bb;
+  min-height: 112px;
+  padding: 16px 24px;
+  gap: 20px;
+}
+.kids-game .dialogue-portrait {
+  border: 0;
+  background: transparent;
+  width: 68px;
+  min-width: 68px;
+  padding: 0;
+  box-shadow: none;
+}
+.chispa {
+  width: 64px;
+  height: 64px;
+  overflow: visible;
+  animation: chispa-float 1.3s steps(3) infinite;
+  filter: drop-shadow(0 4px #14132755);
+}
+.chispa-alert {
+  animation: chispa-wiggle 0.8s steps(2) infinite;
+}
+.chispa-celebrate {
+  animation: chispa-party 0.7s steps(3) infinite;
+}
+.chispa-eyes {
+  animation: chispa-blink 4s steps(1) infinite;
+  transform-origin: center;
+}
+.chispa-antenna {
+  animation: pin-glow 1.4s steps(3) infinite;
+}
+.kids-game .dialogue-portrait > span {
+  font: 7px var(--pixel);
+  color: #ffdc78;
+  margin-top: 5px;
+}
+.kids-game .dialogue-meta > span {
+  color: #e2c9ff;
+  font-size: 13px;
+}
+.kids-game .dialogue-copy p {
+  color: #fff3df;
+  font-size: 23px;
+  max-height: 58px;
+  min-height: 58px;
+  line-height: 1.2;
+}
+.kids-game .dialogue-action {
+  background: #72518a;
+  border: 2px solid #d1b4ed;
+  color: #fff2c1;
+  min-height: 48px;
+}
+.kids-game .iso-controls {
+  background: #19162a;
+  color: #c1b2d2;
+  font-size: 12px;
+}
+.kids-game .world-tactical {
+  background: #211c36;
+  border: 3px solid #b49ad0;
+  box-shadow: 6px 6px #16112a;
+}
+.kids-game .tactical-header {
+  background: #382c4f;
+  border-bottom: 2px solid #8c74a7;
+}
+.kids-game .tactical-header h2 {
+  color: #fff0ca;
+}
+.kids-game .tactical-header > div > span {
+  color: #d7b8f3;
+}
+.kids-game .tactical-close {
+  border: 2px solid #b29bd0;
+  background: #4c3a66;
+  color: #ffebc2;
+  min-width: 42px;
+  min-height: 42px;
+}
+.kids-game .tactical-footer-action {
+  background: #332746;
+  border-color: #887096;
+}
+.kids-game .tactical-footer-hint {
+  color: #d4bfdf;
+}
+.kids-game .launch-button,
+.learning-dialog .launch-button {
+  background: #c6ef9b;
+  color: #253f39;
+  border: 3px solid #e6ffb8;
+  box-shadow: 4px 4px #234e44;
+  font: 9px/1.8 var(--pixel);
+  min-height: 56px;
+  padding: 13px 18px;
+  white-space: normal;
+}
+.kids-game .launch-button:hover,
+.learning-dialog .launch-button:hover {
+  background: #e2ffb9;
+  transform: translateY(-2px);
+}
+.kids-game .easy-slider > span {
+  font-size: 22px;
+  color: #f3ddff;
+}
+.kids-game .easy-mission h3 {
+  color: #fff1c2;
+}
+.kids-game .short-copy,
+.kids-game .easy-tip {
+  color: #e0d0ed;
+}
+.kids-game .safe-zone-label {
+  color: #c1ef9c;
+}
+.kids-game input[type="range"] {
+  min-height: 34px;
+  cursor: pointer;
+}
+.kids-game .safe-band {
+  background: #7aff8477;
+  border: 2px solid #acff82;
+}
+.kids-game .easy-system {
+  border: 2px solid #8270a2;
+  background: #35294c;
+  min-height: 116px;
+}
+.kids-game .easy-system.switched-on {
+  background: #395b46;
+  border-color: #bcf28b;
+}
+.kids-game .world-nasa-button {
+  background: #211c36d9;
+  border-color: #9b80b9;
+  color: #f7dfb1;
+  font-size: 17px;
+  min-height: 36px;
+}
+.kids-game .world-toast {
+  background: #433459;
+  border: 2px solid #ffd47a;
+  color: #fff2c6;
+}
+.learning-dialog {
+  margin: auto;
+  border: 4px solid #c7aae5;
+  padding: 25px;
+  width: min(580px, calc(100% - 28px));
+  max-height: calc(100dvh - 28px);
+  overflow: auto;
+  background: #241f3a;
+  color: #fff0db;
+  box-shadow: 8px 8px #100c23;
+  font: 23px/1.25 var(--terminal);
+}
+.learning-dialog::backdrop {
+  background: #15102cba;
+  backdrop-filter: blur(3px);
+}
+.learning-header {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding-bottom: 18px;
+  border-bottom: 2px dashed #8270a0;
+  margin-bottom: 20px;
+}
+.learning-header .chispa {
+  width: 82px;
+  height: 82px;
+  flex-shrink: 0;
+}
+.learning-header span {
+  font: 8px/1.8 var(--pixel);
+  color: #c0a1e6;
+}
+.learning-header h2 {
+  font: 14px/1.8 var(--pixel);
+  color: #ffe49a;
+  margin: 10px 0 0;
+}
+.quiz-question {
+  font-size: 27px;
+  margin: 14px 0 20px;
+  color: #fff6c6;
+}
+.quiz-answers {
+  display: grid;
+  gap: 12px;
+}
+.quiz-answers button {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  text-align: left;
+  padding: 14px;
+  font: 22px/1.15 var(--terminal);
+  border: 2px solid #9a80b9;
+  background: #3a2d52;
+  box-shadow: 3px 3px #151026;
+  min-height: 62px;
+  color: #fff3dd;
+}
+.quiz-answers button b {
+  background: #d6beef;
+  color: #352748;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  font: 12px var(--pixel);
+}
+.quiz-answers button:hover {
+  background: #54406f;
+  border-color: #ffdb83;
+}
+.quiz-answers button:focus-visible {
+  outline: 3px solid #ffdf65;
+  outline-offset: 3px;
+}
+.quiz-feedback {
+  font-size: 20px;
+  line-height: 1.2;
+  color: #d6c6e5;
+  min-height: 48px;
+  margin: 20px 0 0;
+}
+.medal-earned {
+  text-align: center;
+}
+.medal-earned > svg {
+  width: 105px;
+  height: 125px;
+  margin: 0 auto;
+  animation: medal-pop 0.5s steps(4) 1;
+}
+.medal-earned h3 {
+  font: 13px/1.8 var(--pixel);
+  color: #ffe49a;
+  margin-top: 18px;
+}
+.medal-earned p {
+  font-size: 23px;
+  line-height: 1.2;
+  margin: 15px 0 24px;
+}
+.learning-dialog .launch-button {
+  width: 100%;
+  margin-top: 15px;
+}
+.help-pictures {
+  font-size: 46px;
+  text-align: center;
+  margin: 20px 0;
+}
+.gentle-note {
+  color: #bdaed1;
+  font-size: 20px;
+  line-height: 1.15;
+}
+.signal-color-bar {
+  display: flex;
+  gap: 5px;
+  margin: 8px 0 4px;
+}
+.signal-color-bar i {
+  height: 8px;
+  flex: 1;
+  background: #463751;
+}
+.signal-color-bar i.lit {
+  background: var(--signal-color);
+}
+.kids-game .tactical-preview {
+  background: #182930;
+  border-bottom: 2px solid #749f8b;
+}
+.kids-game .signal-friendly {
+  font-size: 20px;
+}
+.kids-game .route-planner {
+  border: 3px solid #af91cb;
+  background: #231d37f5;
+}
+.kids-game .route-planner .science-play-card {
+  margin: 12px 0;
+}
+.kids-game .route-option {
+  background: #3e3153;
+  border: 2px solid #a88bbd;
+  color: #fff0dc;
+}
+.kids-game .rover-console {
+  background: #251e39ed;
+  border: 2px solid #a389bb;
+}
+.kids-game .rover-heat-toggle {
+  min-height: 58px;
+  background: #483457;
+  border-color: #9d82b5;
+  color: #fff2d9;
+}
+.kids-game .rover-heat-toggle.switched-on {
+  background: #665342;
+  border-color: #ffe39b;
+}
+.kids-game.jezero-game .jezero-world {
+  background: linear-gradient(#30253f, #674d69);
+}
+.kids-game.jezero-night .jezero-world {
+  background: linear-gradient(#191b38, #302947);
+}
+.kids-game .mission-dossier {
+  border: 4px solid #d0b6ec;
+  background: #29213e;
+  color: #fff0d5;
+  width: min(880px, calc(100% - 28px));
+}
+.kids-game .dossier-masthead {
+  background: #423055;
+  border-color: #a78bc1;
+}
+.kids-game .dossier-heading h2 {
+  font-size: 22px;
+  color: #ffe99e;
+  line-height: 1.7;
+}
+.kids-game .dossier-heading {
+  background: #372d4a;
+}
+.kids-game .dossier-grid > div {
+  background: #30273f;
+  border-color: #655271;
+}
+.kids-game .dossier-grid dt {
+  color: #cbb5da;
+}
+.kids-game .dossier-grid dd {
+  color: #fff1ca;
+}
+.kids-game .dossier-grid small,
+.kids-game .dossier-grid p {
+  color: #e1d0eb;
+}
+.diploma-medals {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  padding: 24px 20px;
+  background: #211c32;
+}
+.diploma-medals > div {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  text-align: center;
+}
+.diploma-medals svg {
+  width: 55px;
+  height: 65px;
+}
+.diploma-medals span {
+  font: 8px/1.8 var(--pixel);
+  color: #f3d3a5;
+}
+.diploma-city {
+  padding: 10px 25px;
+  font: 23px/1.2 var(--terminal);
+  text-align: center;
+}
+.diploma-city strong {
+  color: #ffd780;
+}
+.diploma-power {
+  padding: 20px 25px;
+  background: #352d45;
+  font: 21px/1.2 var(--terminal);
+}
+.diploma-power > strong {
+  color: #ffe1a2;
+}
+.diploma-power p {
+  margin: 8px 0;
+}
+.diploma-power small {
+  font-size: 17px;
+  color: #cbb9d9;
+}
+@keyframes pin-glow {
+  50% {
+    color: #fff9b5;
+    filter: drop-shadow(0 0 5px #ffe47d);
+    transform: translateY(-3px);
+  }
+}
+@keyframes chispa-float {
+  50% {
+    transform: translateY(-3px);
+  }
+}
+@keyframes chispa-party {
+  50% {
+    transform: translateY(-7px) rotate(5deg);
+  }
+}
+@keyframes chispa-wiggle {
+  50% {
+    transform: translateX(2px);
+  }
+}
+@keyframes chispa-blink {
+  0%,
+  46%,
+  50%,
+  100% {
+    opacity: 1;
+  }
+  48% {
+    opacity: 0.1;
+  }
+}
+@keyframes medal-pop {
+  from {
+    transform: scale(0.5) rotate(-10deg);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+@media (max-height: 850px) and (min-width: 761px) {
+  .kids-game {
+    min-height: 700px;
+    height: 100dvh;
+  }
+  .kids-game .iso-world {
+    min-height: 305px;
+  }
+  .kids-game .origin-overlay {
+    padding: 14px 24px;
+    gap: 0 25px;
+  }
+  .kids-game .origin-overlay-header h2 {
+    font-size: 14px;
+    margin: 5px 0;
+  }
+  .kids-game .origin-choice {
+    min-height: 56px;
+    padding: 8px;
+  }
+  .kids-game .origin-bonus {
+    font-size: 16px;
+  }
+  .kids-game .origin-choices {
+    gap: 7px;
+  }
+  .bolivia-map {
+    max-width: 270px;
+  }
+  .origin-science {
+    max-width: 260px;
+    bottom: 45px;
+  }
+  .origin-science .science-play-card {
+    padding: 10px;
+  }
+  .origin-science .science-pictures {
+    font-size: 20px;
+  }
+  .origin-science .science-play-card p {
+    font-size: 17px;
+  }
+  .kids-game .world-dialogue {
+    min-height: 94px;
+    padding: 10px 22px;
+  }
+  .kids-game .dialogue-copy p {
+    font-size: 21px;
+    min-height: 50px;
+    max-height: 50px;
+  }
+  .kids-game .world-heading h1 {
+    font-size: 11px;
+  }
+}
+@media (max-width: 760px) {
+  .kids-game {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+  .kids-game .iso-topbar {
+    padding: 0 14px;
+  }
+  .kids-game .iso-header-status {
+    display: none;
+  }
+  .kids-game .mission-goal {
+    font-size: 20px;
+    padding: 10px 13px;
+  }
+  .kids-game .iso-world {
+    min-height: 610px;
+  }
+  .kids-game .world-hud {
+    grid-template-columns: repeat(4, 1fr);
+    padding: 8px;
+  }
+  .kids-game .world-resource {
+    padding: 5px;
+  }
+  .kids-game .resource-glyph {
+    font-size: 18px;
+  }
+  .kids-game .world-resource-label {
+    font-size: 8px;
+  }
+  .kids-game .world-resource strong {
+    font-size: 21px;
+  }
+  .kids-game .world-heading {
+    top: 18px;
+    left: 15px;
+  }
+  .kids-game .world-heading h1 {
+    font-size: 10px;
+    max-width: 190px;
+  }
+  .kids-game .world-heading p {
+    max-width: 180px;
+    font-size: 16px;
+  }
+  .kids-game .world-coordinate-card {
+    right: 14px;
+    max-width: 120px;
+    min-width: 110px;
+    padding: 8px;
+  }
+  .kids-game .world-canvas-container {
+    top: 45px;
+    bottom: 75px;
+  }
+  .kids-game .building-label {
+    font-size: 6px;
+    min-height: 36px;
+    padding: 6px 5px;
+  }
+  .kids-game .building-index {
+    display: none;
+  }
+  .kids-game .origin-overlay {
+    inset: 12px 12px auto;
+    display: flex;
+    width: calc(100% - 24px);
+    max-height: calc(100% - 24px);
+    padding: 16px;
+    transform: none;
+    gap: 13px;
+  }
+  .kids-game .origin-overlay-header {
+    padding: 0;
+    text-align: center;
+  }
+  .kids-game .origin-overlay-header h2 {
+    font-size: 13px;
+    margin: 5px 0;
+  }
+  .kids-game .origin-overlay-header p {
+    font-size: 18px;
+  }
+  .bolivia-map {
+    width: 230px;
+    max-width: 75%;
+    align-self: center;
+    flex-shrink: 0;
+  }
+  .kids-game .origin-choice {
+    min-height: 54px;
+    padding: 8px;
+  }
+  .kids-game .origin-choice strong {
+    font-size: 8px;
+  }
+  .kids-game .origin-bonus {
+    font-size: 16px;
+    white-space: normal;
+  }
+  .kids-game .origin-choices {
+    width: 100%;
+    gap: 8px;
+  }
+  .kids-game .origin-overlay-footer {
+    padding: 0;
+    font-size: 11px;
+  }
+  .map-pin {
+    font-size: 17px;
+    min-height: 40px;
+  }
+  .map-pin i {
+    font-size: 22px;
+  }
+  .origin-science {
+    bottom: 55px;
+    left: 14px;
+    right: 14px;
+    max-width: none;
+  }
+  .origin-science .science-play-card {
+    display: flex;
+    gap: 12px;
+    padding: 10px;
+  }
+  .origin-science .science-pictures {
+    font-size: 23px;
+    flex-basis: 80px;
+  }
+  .origin-science p {
+    font-size: 17px;
+  }
+  .kids-game .world-dialogue {
+    padding: 14px 13px;
+    gap: 12px;
+    min-height: 125px;
+  }
+  .kids-game .dialogue-portrait {
+    min-width: 54px;
+    width: 54px;
+  }
+  .kids-game .dialogue-portrait svg {
+    width: 54px;
+    height: 54px;
+  }
+  .kids-game .dialogue-meta > span {
+    font-size: 11px;
+  }
+  .kids-game .dialogue-copy p {
+    font-size: 21px;
+    min-height: 76px;
+    max-height: none;
+    -webkit-line-clamp: 3;
+    line-height: 1.2;
+  }
+  .kids-game .dialogue-action {
+    grid-column: 1/-1;
+    margin-top: 5px;
+  }
+  .science-play-card {
+    padding: 10px;
+    gap: 10px;
+  }
+  .science-pictures {
+    font-size: 23px;
+    flex-basis: 75px;
+  }
+  .science-play-card p {
+    font-size: 18px;
+  }
+  .science-play-card strong {
+    font-size: 19px;
+  }
+  .kids-game .prologue-steps {
+    padding: 8px;
+    gap: 6px;
+  }
+  .kids-game .prologue-steps button {
+    font-size: 5.5px;
+    min-height: 48px;
+  }
+  .learning-dialog {
+    padding: 19px;
+  }
+  .learning-header {
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+  .learning-header .chispa {
+    width: 65px;
+    height: 65px;
+  }
+  .learning-header h2 {
+    font-size: 11px;
+    line-height: 1.7;
+  }
+  .learning-header span {
+    font-size: 6px;
+  }
+  .quiz-question {
+    font-size: 25px;
+  }
+  .quiz-answers button {
+    font-size: 21px;
+  }
+  .diploma-medals {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .kids-game .dossier-heading h2 {
+    font-size: 16px;
+  }
+  .album-toggle {
+    min-height: 40px;
+    font-size: 7px;
+  }
+  .album-content {
+    right: 12px;
+  }
+  .kids-game .route-planner {
+    max-height: calc(100% - 24px);
+    overflow: auto;
+  }
+  .kids-game .route-planner .science-play-card {
+    display: flex;
+    font-size: 17px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chispa,
+  .chispa-eyes,
+  .chispa-antenna,
+  .map-pin i,
+  .medal-earned > svg {
+    animation: none !important;
+  }
+  .kids-game .launch-button:hover {
+    transform: none;
+  }
+}
+/* Keep the first choice and the whole island visible on a laptop. */
+@media (min-width: 761px) {
+  .kids-game .medal-album {
+    position: absolute;
+    right: 12px;
+    top: 62px;
+    width: 265px;
+    height: 44px;
+    background: transparent;
+    border: 0;
+    z-index: 21;
+  }
+  .kids-game .album-toggle {
+    height: 44px;
+    padding: 4px;
+    gap: 12px;
+    font-size: 7px;
+  }
+  .kids-game .mission-goal {
+    padding-right: 290px;
+  }
+  .kids-game:has(.prologue-steps) .world-hud {
+    display: none;
+  }
+  .kids-game .prologue-steps {
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+  .kids-game .prologue-steps button {
+    min-height: 36px;
+    padding: 7px;
+  }
+  .kids-game .origin-overlay-header {
+    display: block;
+    min-height: 0;
+  }
+  .kids-game .origin-overlay-header .eyebrow {
+    display: none;
+  }
+  .kids-game .origin-choice {
+    flex-direction: row;
+    text-align: left;
+    min-height: 60px;
+  }
+  .kids-game .origin-choice > span:nth-child(2) {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1;
+    gap: 0;
+  }
+  .kids-game .origin-choice > span strong {
+    font-size: 8px;
+  }
+  .kids-game .origin-overlay {
+    grid-template-rows: auto auto 24px;
+  }
+  .kids-game .origin-choices {
+    min-height: 0;
+  }
+  .kids-game .bolivia-map {
+    max-width: 300px;
+  }
+}
+.building-icon {
+  font: 18px/1 var(--terminal);
+  display: block;
+  min-width: 18px;
+}
+@media (max-width: 760px) {
+  .building-icon {
+    font-size: 15px;
+    min-width: 15px;
+  }
+}
+.kids-game:has(.prologue-steps) .world-hud {
+  display: none;
+}
+.kids-game .solar-emergency-heading > .chispa {
+  min-width: 58px;
+  width: 58px;
+  height: 58px;
+  background: none;
+  border: 0;
+}
+@media (max-width: 760px) {
+  .kids-game .world-dialogue {
+    display: grid;
+    grid-template-columns: 54px minmax(0, 1fr);
+    align-items: start;
+    min-height: 125px;
+  }
+  .kids-game .dialogue-portrait {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .kids-game .dialogue-copy {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+  }
+  .kids-game .dialogue-meta {
+    gap: 6px;
+    flex-wrap: wrap;
+    min-height: 28px;
+  }
+  .kids-game .dialogue-copy p {
+    min-height: 72px;
+    margin-top: 6px;
+  }
+  .kids-game .dialogue-action {
+    grid-column: 1/-1;
+    grid-row: 2;
+  }
+  .kids-game .origin-overlay-header .eyebrow {
+    display: none;
+  }
+}
+.kids-game.iso-collapse .world-surface {
+  animation: toy-lift 0.7s steps(3) 5;
+}
+@keyframes toy-lift {
+  50% {
+    translate: 0 -3px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kids-game.iso-collapse .world-surface {
+    animation: none !important;
+  }
+}
+/* A single automatic, twenty-second story clock. */
+.prologue-timeline {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  gap: 7px !important;
+  align-items: center;
+  padding: 8px 20px !important;
+  flex-shrink: 0;
+}
+.prologue-timeline > div {
+  padding: 9px 12px;
+  border: 2px solid #73608b;
+  background: #302541;
+  color: #cab9de;
+  font: 17px/1.2 var(--terminal);
+}
+.prologue-timeline > div > b {
+  color: #ffe6a3;
+  margin-right: 8px;
+  font-weight: 400;
+}
+.prologue-timeline > div[aria-current="step"] {
+  background: #594168;
+  border-color: #ffdc83;
+  color: #fff3d6;
+  box-shadow: 2px 2px #1c1530;
+}
+.prologue-timeline > .prologue-clock {
+  font: 22px var(--terminal);
+  color: #ffdf8d;
+  min-width: 90px;
+  text-align: center;
+}
+.prologue-timeline > small {
+  grid-column: 1/-1;
+  font: 12px/1.2 var(--terminal);
+  color: #d9c4e9;
+  text-align: center;
+  letter-spacing: 0.8px;
+}
+.prologue-narrative .world-dialogue .dialogue-copy p {
+  max-height: none;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+  min-height: 52px;
+}
+.kids-game .world-dialogue .dialogue-copy p {
+  max-height: none;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+.iso-prologue-alert {
+  isolation: isolate;
+}
+.iso-prologue-alert::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  background: #f3292529;
+  animation: prologue-red 1.5s steps(2, end) infinite;
+}
+.iso-prologue-alert .world-surface {
+  animation: prologue-shake 0.65s steps(3, end) infinite;
+}
+.iso-prologue-alert .world-dialogue {
+  border-color: #ff9c80;
+  background: #3d2039;
+}
+.prologue-danger-card {
+  position: fixed;
+  top: 43%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(640px, calc(100% - 32px));
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 22px;
+  background: #391f34f5;
+  border: 4px solid #ffb39a;
+  box-shadow: 7px 7px #200f2ac4;
+  z-index: 40;
+  pointer-events: none;
+  color: #fff4d9;
+}
+.prologue-danger-card > .chispa {
+  width: 76px;
+  height: 76px;
+  flex-shrink: 0;
+}
+.prologue-danger-card > div {
+  flex: 1;
+  min-width: 200px;
+}
+.prologue-danger-card strong {
+  font: 23px/1.6 var(--pixel);
+  color: #ffde86;
+}
+.prologue-danger-card p {
+  font: 23px/1.2 var(--terminal);
+  margin: 10px 0 14px;
+  color: #fff6e6;
+}
+.prologue-danger-card small {
+  font: 13px/1.3 var(--terminal);
+  display: block;
+  color: #eac4e7;
+  letter-spacing: 0.6px;
+}
+.prologue-danger-card progress {
+  width: 100%;
+  height: 16px;
+  accent-color: #ffcf69;
+}
+@keyframes prologue-red {
+  0%,
+  100% {
+    background: #f329251c;
+  }
+  50% {
+    background: #f329253d;
+  }
+}
+@keyframes prologue-shake {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  33% {
+    translate: 2px -1px;
+  }
+  66% {
+    translate: -2px 1px;
+  }
+}
+@media (max-width: 760px) {
+  .prologue-timeline {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding: 8px !important;
+    gap: 6px !important;
+  }
+  .prologue-timeline > div {
+    padding: 7px 5px;
+    font-size: 16px;
+    min-height: 52px;
+  }
+  .prologue-timeline > div > b {
+    display: block;
+    font-size: 16px;
+    margin: 0 0 2px;
+  }
+  .prologue-timeline > .prologue-clock {
+    grid-column: 1/-1;
+    font-size: 20px;
+  }
+  .prologue-timeline > small {
+    font-size: 11px;
+  }
+  .prologue-danger-card {
+    gap: 12px;
+    padding: 17px;
+    top: 44%;
+  }
+  .prologue-danger-card > .chispa {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    right: 18px;
+    top: 16px;
+  }
+  .prologue-danger-card strong {
+    font-size: 20px;
+    padding-right: 60px;
+  }
+  .prologue-danger-card p {
+    font-size: 21px;
+    line-height: 1.15;
+    margin: 15px 0 12px;
+  }
+  .prologue-danger-card small {
+    font-size: 12px;
+  }
+  .prologue-narrative .world-dialogue .dialogue-copy p {
+    font-size: 20px;
+    min-height: 72px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .iso-prologue-alert::after {
+    animation: none;
+    background: #f3292529;
+  }
+  .iso-prologue-alert .world-surface {
+    animation: none;
+  }
+}
