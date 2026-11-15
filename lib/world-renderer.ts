@@ -815,19 +815,19 @@ export function drawLunarFlight(
   // The whole island platform flies, shrinking with the distance.
   const sf = scale * (W / 800);
   c.drawImage(island, fx - 400 * sf, fy - 260 * sf, 800 * sf, 520 * sf);
-  // Rocket fire: columns of flame under the island platform.
+  // Rocket fire: columns of flame right under the platform's base edge.
   const flick = Math.floor(time / 70) % 2;
-  const fireY = fy + 185 * sf;
-  for (const off of [-210, -110, 0, 110, 200]) {
+  const fireY = fy + 245 * sf;
+  for (const off of [-230, -130, -30, 80, 190]) {
     const px = fx + off * sf;
     const len =
       plume *
-      (26 + 12 * Math.abs(Math.sin(off * 0.13))) *
+      (58 + 26 * Math.abs(Math.sin(off * 0.13))) *
       sf *
-      (flick ? 1.15 : 1);
+      (flick ? 1.18 : 1);
     for (let i = 0; i < 4; i++) {
       const seg = len * (i / 4);
-      const w = (26 - i * 5) * sf;
+      const w = (40 - i * 8) * sf;
       box(
         c,
         i === 0
@@ -840,7 +840,7 @@ export function drawLunarFlight(
         px - w / 2,
         fireY + seg,
         w,
-        Math.max(2, (len / 4) * (1 - i * 0.08)),
+        Math.max(3, (len / 4) * (1 - i * 0.08)),
       );
     }
   }
@@ -883,16 +883,20 @@ export function renderWorld(c: CanvasRenderingContext2D, f: WorldFrame) {
   }
   // The island layer only depends on city and mars-transform progress, so it
   // is painted once per (city, transform bucket) and blitted every frame.
+  // During the launch window the overlay flies the island instead, so the
+  // in-canvas copy is hidden to avoid a duplicated island.
+  const launchFlight = transform > 0 && transform < 1;
   const bucket = Math.round(transform * 20) / 20;
-  c.drawImage(
-    cachedLayer(`island|${city}|${bucket}|${mars ? "mars" : "terra"}`, (c) =>
-      paintIslandLayer(c, city, transform),
-    ),
-    0,
-    0,
-  );
+  if (!launchFlight)
+    c.drawImage(
+      cachedLayer(`island|${city}|${bucket}|${mars ? "mars" : "terra"}`, (c) =>
+        paintIslandLayer(c, city, transform),
+      ),
+      0,
+      0,
+    );
   // Cables, ground route and landing markers are part of the terrain layer.
-  for (const tile of path) {
+  for (const tile of launchFlight ? [] : path) {
     const pt = p(tile);
     pt.y -= tileIsMars(tile.x, tile.y, transform)
       ? 0
@@ -907,6 +911,7 @@ export function renderWorld(c: CanvasRenderingContext2D, f: WorldFrame) {
     box(c, "#fff5b7", pt.x - 1, pt.y - 1, 2, 2);
   }
   if (
+    !launchFlight &&
     hover &&
     islandTile(hover, city) &&
     hover.x >= 0 &&
@@ -1059,7 +1064,7 @@ export function renderWorld(c: CanvasRenderingContext2D, f: WorldFrame) {
     },
   });
   items.sort((a, b) => a.depth - b.depth);
-  items.forEach((i) => i.draw());
+  if (!launchFlight) items.forEach((i) => i.draw());
   if (storm) {
     for (let i = 0; i < 110; i++) {
       const dx =
