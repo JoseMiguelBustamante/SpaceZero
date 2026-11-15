@@ -650,34 +650,49 @@ export function drawLunarFlight(
       2 * k,
     );
   }
-  // The hero's tile, flying as the rocket's launch platform.
-  diamond(c, tileColor, { x: fx, y: fy }, 32 * s2, 16 * s2);
-  line(c, "#3d593966", [fx - 32 * s2, fy], [fx, fy + 16 * s2]);
-  line(c, "#3d593966", [fx, fy + 16 * s2], [fx + 32 * s2, fy]);
-  // Rocket standing on the platform.
-  const jitter = t < 0.3 ? Math.sin(time / 35) * 1.5 * k : 0;
-  const base = fy - 14 * s2;
-  const rx = fx + jitter;
-  box(c, "#d9d9d9", rx - 5 * s2, base - 24 * s2, 10 * s2, 24 * s2);
-  box(c, "#a8a8a8", rx + 2 * s2, base - 24 * s2, 3 * s2, 24 * s2);
-  box(c, "#e04b3a", rx - 5 * s2, base - 30 * s2, 10 * s2, 6 * s2);
-  box(c, "#e04b3a", rx - 3 * s2, base - 34 * s2, 6 * s2, 4 * s2);
-  box(c, "#e04b3a", rx - 1 * s2, base - 36 * s2, 2 * s2, 2 * s2);
-  box(c, "#e04b3a", rx - 9 * s2, base - 10 * s2, 4 * s2, 10 * s2);
-  box(c, "#e04b3a", rx + 5 * s2, base - 10 * s2, 4 * s2, 10 * s2);
-  box(c, "#70bbc1", rx - 2 * s2, base - 18 * s2, 4 * s2, 4 * s2);
-  // Engine plume under the platform, flickering.
+  // The hero's tile, flying as its own rocket with engine fire underneath.
+  const jx = fx + (t < 0.3 ? Math.sin(time / 35) * 1.5 * k : 0);
+  diamond(c, tileColor, { x: jx, y: fy }, 32 * s2, 16 * s2);
+  line(c, "#3d593966", [jx - 32 * s2, fy], [jx, fy + 16 * s2]);
+  line(c, "#3d593966", [jx, fy + 16 * s2], [jx + 32 * s2, fy]);
+  // Rocket fire: layered flickering flame under the tile.
   const flick = Math.floor(time / 70) % 2;
-  const plumeLen = plume * (34 + flick * 10) * s2;
-  for (let i = 0; i < 5; i++) {
-    const seg = plumeLen * (i / 5);
+  const plumeLen = plume * (46 + flick * 14) * s2;
+  for (let i = 0; i < 6; i++) {
+    const seg = plumeLen * (i / 6);
+    const w = (18 - i * 2.5) * s2;
     box(
       c,
-      i === 0 ? "#ffd27f" : i === 1 ? "#ff9d3c" : "#e86a2f",
-      rx - (6 - i) * s2,
+      i === 0
+        ? "#fff3b0"
+        : i === 1
+          ? "#ffd27f"
+          : i === 2
+            ? "#ff9d3c"
+            : "#e86a2f",
+      jx - w / 2,
       fy + 16 * s2 + seg,
-      (12 - i * 2) * s2,
-      (plumeLen / 5) * (1 - i * 0.12),
+      w,
+      Math.max(2, (plumeLen / 6) * (1 - i * 0.1)),
+    );
+  }
+  // Side sparks.
+  if (Math.floor(time / 90) % 2 === 0) {
+    box(
+      c,
+      "#ff9d3c88",
+      jx - 12 * s2,
+      fy + 14 * s2 + plumeLen * 0.3,
+      3 * s2,
+      3 * s2,
+    );
+    box(
+      c,
+      "#ff9d3c88",
+      jx + 9 * s2,
+      fy + 14 * s2 + plumeLen * 0.45,
+      3 * s2,
+      3 * s2,
     );
   }
   c.globalAlpha = 1;
