@@ -1,0 +1,77 @@
+PRÓLOGO AUTOMÁTICO — 15/11/2026
+
+- 66 pruebas aprobadas; TypeScript y compilación estática correctos.
+- Un único reloj global inicia al seleccionar ciudad: 0–10 exploración, 10–16 alerta, 16–20 transformación, 20 arranque directo de Sol 1.
+- Sin botones de transformación/arranque ni pregunta obligatoria del Sol 0. Se conservan las preguntas de los soles 1, 8, 18 y 28.
+- Alerta roja en toda la pantalla, sacudida suave, Chispa sorprendido y sirena de onda cuadrada. Sonido silenciable; nodos y temporizadores de sirena se detienen al finalizar/cancelar la alerta.
+- Preferencia de movimiento reducido: rojo estático y sin sacudida; duración idéntica.
+- Cronómetro observado en navegador con un solo clic en Santa Cruz: ciudad 0.28 s, alerta 10.13 s sin transformación, transformación 16.12 s, Sol 1 a los 20.15 s sin cartel rojo ni pregunta.
+- La latencia indicada incluye el envío de la interacción y la lectura del navegador. El reloj del estado usa cortes exactos de 10, 16 y 20 segundos.
+- El mensaje final completo se mostró y el Invernadero siguió jugable. Sin errores ni advertencias de consola durante la revisión.
+- Pruebas de las tres ciudades, respaldo POWER al segundo 20, cancelación por reinicio, selección nueva, ticks antiguos, reloj monotónico y arranque único.
+- Conexiones y respaldos NASA conservados. Se retiró el antiguo temporizador visual de 2.6 segundos.
+- El cataclismo está rotulado como historia de fantasía y se incluye un enlace NASA sobre los polos magnéticos.
+- Capturas: prologo-ciudad.jpg, prologo-alerta.jpg, prologo-transformacion.jpg, prologo-sol1.jpg.
+- Registro de etapas observadas: prologo-observado.json.
+- Apertura local en http://127.0.0.1:3001; no se publicó el proyecto.
+
+HISTORIAL DE LA REVISIÓN ANTERIOR (14/11/2026)
+Los botones manuales descritos abajo pertenecen a la versión anterior.
+
+REVISIÓN EDUCATIVA — CHISPA Y LAS ISLAS FLOTANTES
+14/11/2026
+
+ENTREGA LOCAL
+- Se conserva http://127.0.0.1:3001, solo en este equipo.
+- No se subió ni se publicó código en Sites.
+- El servidor local se deja activo para jugar.
+
+PRUEBAS AUTOMÁTICAS
+- 57 pruebas aprobadas, sin omisiones.
+- TypeScript y compilación estática Next.js correctos.
+- Las cinco puertas y todas las casillas transitables se alcanzan dentro de la silueta de cada departamento.
+- Teclado, clic, inversión isométrica, colisiones y rutas conectadas.
+- Seis recorridos completos: tres ciudades por dos caminos de Jezero.
+- Preguntas con tres respuestas, reintentos sin pérdida de recursos, medallas sin duplicación y reinicio completo.
+- No se puede saltar una pregunta ni recibir el diploma antes de acertar la última.
+- Recursos críticos pausan la acción; corregir y continuar conserva las medallas.
+- La ayuda al acabar un Sol abre su pregunta al reanudar, sin bloquear el avance.
+- El escudo tardío da otra oportunidad sin radiación; el reloj se repone tras corregir.
+- Se mantienen validación de APIs, respuestas antiguas descartadas, coordenadas y respaldos reales.
+
+NASA PRESERVADA
+- lib/donki.ts: idéntico byte por byte al inicio de esta revisión.
+- selectCity (consulta POWER), load (consulta DONKI), climateUrl y parseClimate: idénticos al comparar sus funciones.
+- El proveedor cambia para pausar relojes y sonidos durante las ayudas y preguntas.
+- Detalle en PRESERVACION_LOGICA.json.
+- En el recorrido observado, POWER respondió con el registro de Uyuni del 15/01/2024: 14.6 °C, 7.68 kWh/m²/día.
+- DONKI usó el respaldo real etiquetado: X8.7, 14/05/2024 16:51 UTC, región 13664. El escudo quedó activado.
+
+REVISIÓN EN NAVEGADOR
+- Mapa de Bolivia con sus nueve departamentos y tres pines seleccionables.
+- En 1280×720 se ven los tres destinos y sus bonos sin cortar el mapa.
+- En 390×844, diseño vertical desplazable, controles táctiles y ausencia de desbordamiento horizontal.
+- Isla recortada de Santa Cruz, isla salina de Potosí y terrazas/montañas de La Paz.
+- Misma silueta antes y después de la transformación a Marte.
+- Chispa feliz, sorprendido ante el frío y celebrando las respuestas correctas.
+- Se eligió una respuesta incorrecta: explicación amable y posibilidad de volver a elegir.
+- Entrada al Invernadero al llegar a su puerta, cultivo de 25 segundos y pregunta del agua.
+- Refugio con dos ayudas activas; salida real del astronauta a limpiar paneles y regreso.
+- Antena con barras de colores, controles cercanos al objetivo y conexión con NASA.
+- Ruta larga de Jezero: se apagó la calefacción; al bajar a 34.8 °C, Chispa pausó el viaje.
+- Pulsar Encender la calefacción corrigió el control; Seguir explorando conservó tres medallas.
+- Se recorrieron 40 km y se respondió la pregunta del rover antes de mostrar el diploma.
+- Diploma observado con cuatro medallas, ciudad Uyuni, cosecha salvada, exposición exterior 6%, llamarada guardada y batería 52.70%.
+- El diploma explica que es educativo y no está emitido por NASA.
+
+ARTE Y GEOGRAFÍA
+- Contornos reales GeoBolivia / geoBoundaries BOL ADM1 de 2015, dominio público, simplificados para Pixel Art.
+- La Paz y Potosí usan su polígono principal. Uyuni corresponde al departamento de Potosí.
+- La escala de los juguetes, la isla voladora, el escudo y los consumos son ficción educativa.
+- Sprites, terrenos y medallas procedurales Canvas/SVG; ninguna imagen externa.
+- Fuentes Press Start 2P y VT323; Canvas sin suavizado y estilos para movimiento reducido.
+
+CAPTURAS
+- chispa-ayuda.jpg: pausa por frío y botón para corregir.
+- chispa-diploma.jpg: diploma y cuatro medallas.
+- chispa-isla.jpg: mundo isométrico con guía de misión.

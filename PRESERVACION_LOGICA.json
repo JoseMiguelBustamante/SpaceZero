@@ -1,0 +1,21 @@
+{
+  "version": "Prólogo automático de 20 segundos",
+  "fecha": "2026-11-15",
+  "conexiones_NASA_preservadas": true,
+  "comprobaciones": {
+    "climateUrl": true,
+    "parseClimate": true,
+    "POWER_fetch_y_respaldo": true,
+    "DONKI_load": true,
+    "DONKI_modulo": true
+  },
+  "cambios_intencionales": [
+    "SELECT inicia reloj global; PROLOGUE_TICK cancela respuestas de secuencias anteriores y arranca Sol 1 una sola vez a los 20 segundos.",
+    "Se retira el temporizador visual antiguo de 2.6 segundos y los botones manuales.",
+    "No hay pregunta obligatoria en el Sol 0; se mantienen las cuatro preguntas y medallas de las misiones.",
+    "Sirena retro automática silenciable, con limpieza de osciladores al terminar o cancelar.",
+    "Respaldo POWER histórico al segundo 20 como protección adicional si no llegaron datos.",
+    "La escena del cataclismo se identifica como fantasía."
+  ],
+  "geografia": "Se conservan los contornos GeoBolivia/geoBoundaries y el motor isométrico."
+}
