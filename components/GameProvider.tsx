@@ -49,7 +49,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const tick = () =>
       dispatch({ type: "PROLOGUE_TICK", requestId, now: Date.now() });
     tick();
-    const timer = setInterval(tick, 40);
+    // Wall-clock based: 100 ms keeps the 20 s transition exact while
+    // cutting re-render load on low-powered devices.
+    const timer = setInterval(tick, 100);
     return () => clearInterval(timer);
   }, [
     state.solActual,

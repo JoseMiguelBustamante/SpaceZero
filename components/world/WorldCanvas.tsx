@@ -212,7 +212,9 @@ export const WorldCanvas = forwardRef<WorldHandle, Props>(
         "(prefers-reduced-motion: reduce)",
       ).matches;
       function frame(time: number) {
-        const dt = Math.min(0.05, (time - last) / 1000);
+        // Cap generously so low-FPS devices (mobile) keep real-time speed
+        // instead of slow motion; rAF pauses on hidden tabs stay harmless.
+        const dt = Math.min(0.25, (time - last) / 1000);
         last = time;
         const h = hero.current,
           p = live.current;

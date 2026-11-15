@@ -114,7 +114,8 @@ export const JezeroCanvas = forwardRef<
       last = 0,
       lastMoving = false;
     function draw(time: number) {
-      const delta = Math.min(0.045, (time - last) / 1000 || 0);
+      // Cap generously so low-FPS devices keep real-time rover speed.
+      const delta = Math.min(0.25, (time - last) / 1000 || 0);
       last = time;
       const s = live.current.state;
       let moving = false;
