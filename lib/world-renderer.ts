@@ -527,6 +527,33 @@ function avatar(c: CanvasRenderingContext2D, frame: WorldFrame) {
     box(c, "#bdb79a", x + 16, y + 2, 12, 3);
   }
 }
+// Offscreen static-layer cache: stars and the island terrain are repainted
+// identically every frame; caching them cuts per-frame draw calls drastically
+// on low-powered (mobile) devices.
+const layerCache = new Map<string, HTMLCanvasElement>();
+function cachedLayer(
+  key: string,
+  paint: (tc: CanvasRenderingContext2D) => void,
+): HTMLCanvasElement {
+  let layer = layerCache.get(key);
+  if (!layer) {
+    layer = document.createElement("canvas");
+    layer.width = WORLD.width;
+    layer.height = WORLD.height;
+    const tc = layer.getContext("2d");
+    if (tc) {
+      tc.imageSmoothingEnabled = false;
+      paint(tc);
+      layerCache.set(key, layer);
+      if (layerCache.size > 6) {
+        const oldest = layerCache.keys().next().value;
+        if (oldest !== undefined) layerCache.delete(oldest);
+      }
+    }
+  }
+  return layer;
+}
+
 export function renderWorld(c: CanvasRenderingContext2D, f: WorldFrame) {
   const { state, transform, time, path, hover } = f;
   const city = state.cityId;
@@ -535,18 +562,24 @@ export function renderWorld(c: CanvasRenderingContext2D, f: WorldFrame) {
   const p = project;
   c.imageSmoothingEnabled = false;
   c.clearRect(0, 0, WORLD.width, WORLD.height);
-  for (let i = 0; i < 65; i++) {
-    const x = Math.floor(n(i, 2) * 800),
-      y = Math.floor(n(i, 4) * 470);
-    box(
-      c,
-      i % 8 === 0 ? "#a89c9244" : "#776b8533",
-      x,
-      y,
-      i % 8 === 0 ? 2 : 1,
-      1,
-    );
-  }
+  c.drawImage(
+    cachedLayer("stars", (c) => {
+      for (let i = 0; i < 65; i++) {
+        const x = Math.floor(n(i, 2) * 800),
+          y = Math.floor(n(i, 4) * 470);
+        box(
+          c,
+          i % 8 === 0 ? "#a89c9244" : "#776b8533",
+          x,
+          y,
+          i % 8 === 0 ? 2 : 1,
+          1,
+        );
+      }
+    }),
+    0,
+    0,
+  );
   for (let i = 0; i < 5; i++) {
     const cx = ((i * 211 + (f.reduced ? 0 : time * 0.003)) % 940) - 70,
       cy = 78 + (i % 3) * 141;
@@ -555,7 +588,12 @@ export function renderWorld(c: CanvasRenderingContext2D, f: WorldFrame) {
     box(c, color, cx + 15, cy - 10, 43, 12);
     box(c, color, cx - 10, cy + 9, 103, 7);
   }
-  const outline = regionPolygon(city).map((a) => q(a));
+  // The island layer only depends on city and mars-transform progress, so it
+  // is painted once per (city, transform bucket) and blitted every frame.
+  const bucket = Math.round(transform * 20) / 20;
+  c.drawImage(
+    cachedLayer(`island|${city}|${bucket}|${mars ? "mars" : "terra"}`, (c) => {
+    const outline = regionPolygon(city).map((a) => q(a));
   // A continuous, geographically sourced silhouette; scanline rasterization keeps pixel edges.
   poly(
     c,
@@ -701,7 +739,11 @@ export function renderWorld(c: CanvasRenderingContext2D, f: WorldFrame) {
       )
         diamond(c, "#f2b57666", pt);
     }
-  c.restore();
+    c.restore();
+    }),
+    0,
+    0,
+  );
   // Cables, ground route and landing markers are part of the terrain layer.
   for (const tile of path) {
     const pt = p(tile);
