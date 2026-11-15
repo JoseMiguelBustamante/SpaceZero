@@ -596,24 +596,32 @@ export function renderWorld(c: CanvasRenderingContext2D, f: WorldFrame) {
     const moon = { x: 92, y: 84 };
     const moonR = 10 + t * 14;
     const dockY = moon.y + moonR * 0.5;
+    // Rocket ascent: vertical climb off the island, then a cruise arc.
+    const lift = 140; // height gained during the vertical ascent
     let fx: number, fy: number, scale: number, spriteAlpha: number;
-    if (t < 0.25) {
-      // Detach: the tile lifts straight off the island.
-      const k = t / 0.25;
+    let plume: number; // exhaust plume length factor 0..1
+    if (t < 0.3) {
+      // Liftoff: engines ignite and the platform climbs straight up.
+      const k = t / 0.3;
+      const ease = 1 - (1 - k) * (1 - k);
       fx = start.x;
-      fy = start.y - k * 64;
-      scale = 1 - k * 0.15;
+      fy = start.y - ease * lift;
+      scale = 1 - k * 0.2;
       spriteAlpha = 1;
+      plume = Math.min(1, t / 0.12) * (0.6 + k * 0.4);
     } else if (t < 0.85) {
       // Cruise: arc across the sky towards the Moon.
-      const k = (t - 0.25) / 0.6;
-      const mx = (start.x + moon.x) / 2;
-      const my = Math.min(start.y, moon.y) - 130;
+      const k = (t - 0.3) / 0.55;
+      const sx = start.x;
+      const sy = start.y - lift;
+      const mx = (sx + moon.x) / 2;
+      const my = Math.min(sy, moon.y) - 120;
       const u = 1 - k;
-      fx = u * u * start.x + 2 * u * k * mx + k * k * moon.x;
-      fy = u * u * start.y + 2 * u * k * my + k * k * dockY;
-      scale = 0.85 - k * 0.45;
+      fx = u * u * sx + 2 * u * k * mx + k * k * moon.x;
+      fy = u * u * sy + 2 * u * k * my + k * k * dockY;
+      scale = 0.8 - k * 0.4;
       spriteAlpha = 1;
+      plume = 0.45;
     } else {
       // Dock: settle onto the lunar surface and hand back to the island.
       const k = (t - 0.85) / 0.15;
@@ -621,6 +629,7 @@ export function renderWorld(c: CanvasRenderingContext2D, f: WorldFrame) {
       fy = dockY - k * 4;
       scale = 0.4;
       spriteAlpha = 1 - k;
+      plume = 0.3 * (1 - k);
     }
     const heroAlpha =
       t < 0.15 ? 1 - t / 0.15 : t < 0.9 ? 0 : (t - 0.9) / 0.1;
@@ -646,6 +655,7 @@ export function renderWorld(c: CanvasRenderingContext2D, f: WorldFrame) {
       heroAlpha,
       tileColor,
       hm,
+      plume,
     };
   })();
   c.drawImage(
@@ -1038,7 +1048,15 @@ export function renderWorld(c: CanvasRenderingContext2D, f: WorldFrame) {
   if (flight && flight.spriteAlpha > 0) {
     c.globalAlpha = flight.spriteAlpha;
     const s2 = flight.scale;
-    // Exhaust trail pointing back to the departure tile.
+    // Launch smoke drifting at the departure tile during liftoff.
+    if (flight.t < 0.35 && flight.plume > 0.3) {
+      for (let i = 0; i < 6; i++) {
+        const sx = flight.start.x + Math.sin(i * 41 + time / 90) * 18,
+          sy = flight.start.y + 8 + (i % 3) * 5 - flight.t * 40;
+        box(c, i % 2 ? "#b8a9a055" : "#cbbdb877", sx, sy, 9, 4);
+      }
+    }
+    // Exhaust trail pointing back to the departure point.
     const dx = flight.start.x - flight.fx,
       dy = flight.start.y - flight.fy;
     const d = Math.hypot(dx, dy) || 1;
@@ -1053,7 +1071,7 @@ export function renderWorld(c: CanvasRenderingContext2D, f: WorldFrame) {
         2,
       );
     }
-    // The hero's tile, floating with the hero riding it.
+    // The hero's tile, flying as the rocket's launch platform.
     diamond(
       c,
       flight.tileColor,
@@ -1073,23 +1091,32 @@ export function renderWorld(c: CanvasRenderingContext2D, f: WorldFrame) {
       [flight.fx, flight.fy + 16 * s2],
       [flight.fx + 32 * s2, flight.fy],
     );
-    const bob = Math.floor(time / 130) % 2;
-    const bx = flight.fx,
-      by = flight.fy - 2;
-    box(c, "#8a7560", bx - 4 * s2, by - 12 * s2 - bob, 4 * s2, 8 * s2);
-    box(
-      c,
-      flight.hm ? "#e9dfc7" : "#e6b25d",
-      bx - 2 * s2,
-      by - 13 * s2 - bob,
-      8 * s2,
-      9 * s2,
-    );
-    box(c, "#b98e6e", bx - 2 * s2, by - 18 * s2 - bob, 7 * s2, 6 * s2);
-    box(c, "#483c36", bx - 3 * s2, by - 19 * s2 - bob, 9 * s2, 3 * s2);
-    // Engine flicker under the tile.
-    if (Math.floor(time / 90) % 2 === 0)
-      box(c, "#ffd27f99", bx - 2, flight.fy + 14 * s2, 4, 3);
+    // Rocket standing on the platform.
+    const jitter = flight.t < 0.3 ? Math.sin(time / 35) * 1.5 : 0;
+    const base = flight.fy - 14 * s2;
+    const rx = flight.fx + jitter;
+    box(c, "#d9d9d9", rx - 5 * s2, base - 24 * s2, 10 * s2, 24 * s2);
+    box(c, "#a8a8a8", rx + 2 * s2, base - 24 * s2, 3 * s2, 24 * s2);
+    box(c, "#e04b3a", rx - 5 * s2, base - 30 * s2, 10 * s2, 6 * s2);
+    box(c, "#e04b3a", rx - 3 * s2, base - 34 * s2, 6 * s2, 4 * s2);
+    box(c, "#e04b3a", rx - 1 * s2, base - 36 * s2, 2 * s2, 2 * s2);
+    box(c, "#e04b3a", rx - 9 * s2, base - 10 * s2, 4 * s2, 10 * s2);
+    box(c, "#e04b3a", rx + 5 * s2, base - 10 * s2, 4 * s2, 10 * s2);
+    box(c, "#70bbc1", rx - 2 * s2, base - 18 * s2, 4 * s2, 4 * s2);
+    // Engine plume under the platform, flickering.
+    const flick = Math.floor(time / 70) % 2;
+    const plumeLen = flight.plume * (34 + flick * 10) * s2;
+    for (let i = 0; i < 5; i++) {
+      const seg = plumeLen * (i / 5);
+      box(
+        c,
+        i === 0 ? "#ffd27f" : i === 1 ? "#ff9d3c" : "#e86a2f",
+        rx - (6 - i) * s2,
+        flight.fy + 16 * s2 + seg,
+        (12 - i * 2) * s2,
+        (plumeLen / 5) * (1 - i * 0.12),
+      );
+    }
     c.globalAlpha = 1;
   }
   if (state.rescue.status === "complete") {
