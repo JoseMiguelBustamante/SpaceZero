@@ -3403,7 +3403,12 @@
 }
 .mission-dossier::backdrop {
   background: #090c16c9;
-  backdrop-filter: blur(2px);
+}
+/* Full-screen backdrop blur is very costly on mobile GPUs; desktop only. */
+@media (min-width: 1024px) {
+  .mission-dossier::backdrop {
+    backdrop-filter: blur(2px);
+  }
 }
 .dossier-masthead {
   display: flex;

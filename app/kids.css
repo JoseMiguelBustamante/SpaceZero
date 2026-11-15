@@ -561,7 +561,12 @@
 }
 .learning-dialog::backdrop {
   background: #15102cba;
-  backdrop-filter: blur(3px);
+}
+/* Full-screen backdrop blur is very costly on mobile GPUs; desktop only. */
+@media (min-width: 1024px) {
+  .learning-dialog::backdrop {
+    backdrop-filter: blur(3px);
+  }
 }
 .learning-header {
   display: flex;

@@ -1014,10 +1014,16 @@ main {
   inset: 0;
   z-index: 50;
   background: #0c0a13d9;
-  backdrop-filter: blur(3px);
   display: grid;
   place-items: center;
   padding: 24px;
+}
+/* Full-screen backdrop blur recomposites every animation frame on mobile
+   GPUs and drags the whole game down; keep it for large screens only. */
+@media (min-width: 1024px) {
+  .modal-backdrop {
+    backdrop-filter: blur(3px);
+  }
 }
 .modal {
   max-width: 520px;
