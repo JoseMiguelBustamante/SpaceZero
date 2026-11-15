@@ -1,12 +1,21 @@
 import { useEffect, useRef } from "react";
+import type { CityId } from "@/lib/game";
 import { drawLunarFlight } from "@/lib/world-renderer";
 
-// Full-screen overlay that keeps the rocket launch visible above the
+// Full-screen overlay that keeps the island launch visible above the
 // prologue danger card. Purely visual; it never captures input.
-export function RocketLaunch({ progress }: { progress: number }) {
+export function RocketLaunch({
+  progress,
+  cityId,
+}: {
+  progress: number;
+  cityId: CityId | null;
+}) {
   const ref = useRef<HTMLCanvasElement>(null);
   const progressRef = useRef(progress);
   progressRef.current = progress;
+  const cityIdRef = useRef(cityId);
+  cityIdRef.current = cityId;
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -27,7 +36,7 @@ export function RocketLaunch({ progress }: { progress: number }) {
         h = canvas.height = ch;
       }
       c.clearRect(0, 0, w, h);
-      if (t > 0 && t < 1) drawLunarFlight(c, t, w, h);
+      if (t > 0 && t < 1) drawLunarFlight(c, t, w, h, cityIdRef.current);
       raf = requestAnimationFrame(frame);
     };
     raf = requestAnimationFrame(frame);

@@ -520,7 +520,7 @@ export function IsometricGame() {
           </span>
         </div>
         {s.solActual === 0 && transformation > 0 && transformation < 1 && (
-          <RocketLaunch progress={transformation} />
+          <RocketLaunch progress={transformation} cityId={s.cityId} />
         )}
         <WorldCanvas
           ref={world}
