@@ -29,6 +29,7 @@ import {
   PROLOGUE_SURVIVED,
 } from "@/lib/prologue";
 import { MissionDossier } from "./MissionDossier";
+import { RocketLaunch } from "./RocketLaunch";
 type Cinematic = "select" | "earth" | "warning" | "collapse" | "mars";
 type Panel = BuildingId | "help" | "history" | "nasa" | null;
 type EvaTrip = { cycle: number; startedAt: number; arrivedAt: number };
@@ -518,6 +519,9 @@ export function IsometricGame() {
             {s.climate ? "DATOS NASA LISTOS" : "PREPARANDO VIAJE"}
           </span>
         </div>
+        {s.solActual === 0 && transformation > 0 && transformation < 1 && (
+          <RocketLaunch progress={transformation} />
+        )}
         <WorldCanvas
           ref={world}
           transformation={transformation}
